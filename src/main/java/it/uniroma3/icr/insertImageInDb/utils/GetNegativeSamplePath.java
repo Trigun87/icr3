@@ -7,7 +7,7 @@ public class GetNegativeSamplePath extends GetManuscriptPath{
 
 	@Override
 	public String getPath() {
-		String path = this.getServletContext().getInitParameter("pathNegativeSample");
+		String path = System.getProperty("user.dir") + this.getServletContext().getInitParameter("pathNegativeSample");
     	return path;
 	}
 

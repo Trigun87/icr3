@@ -23,8 +23,7 @@ public abstract class GetManuscriptPath implements ServletContextAware{
 	public List<Manuscript> getManuscript() throws FileNotFoundException, IOException {
 		List<Manuscript> manuscripts = new ArrayList<>();
 		
-		String path = "C:\\Users\\Massimo\\Desktop\\Workstation\\icr3\\src\\main\\resources\\static\\img\\images\\";
-				//this.getPath();
+		String path = this.getPath();
 		
 		File[] files = new File(path).listFiles();
 		for(int i=0;i<files.length;i++) {

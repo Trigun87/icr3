@@ -229,24 +229,20 @@ public class AdminController {
 		String manuscriptName = manuscript.getName();
 		this.manuscriptService.saveManuscript(manuscript);
 		Manuscript m = this.manuscriptService.findManuscriptByName(manuscriptName);
-		String path = "C:\\Users\\Massimo\\Desktop\\Workstation\\icr3\\src\\main\\resources\\static\\img\\samples\\";
-		//symbolFacade.getPath();
+		String path = symbolFacade.getPath();
 		path = path.concat(manuscriptName).concat("\\\\");
 		symbolFacade.insertSymbolInDb(path, m);
-		path = "C:\\Users\\Massimo\\Desktop\\Workstation\\icr3\\src\\main\\resources\\static\\img\\samples\\";
-		//sampleService.getPath();
+		path = sampleService.getPath();
 		path = path.concat(manuscriptName).concat("\\\\");
 		sampleService.getSampleImage(path, m);
-		path = "C:\\Users\\Massimo\\Desktop\\Workstation\\icr3\\src\\main\\resources\\static\\img\\negativeSamples\\";
-		//negativeSampleService.getNegativePath();
+		path = negativeSampleService.getNegativePath();
 		path = path.concat(manuscriptName).concat("\\\\");
 		negativeSampleService.getNegativeSampleImage(path, m); // negativeSampleImage(path);
 		String action = request.getParameter("action");
 		String wordString = "WORD";
 		String imageString = "IMAGE";
 		if(wordString.equals(action)) {
-			path = "C:\\Users\\Massimo\\Desktop\\Workstation\\icr3\\src\\main\\resources\\static\\img\\images\\";
-			//wordFacade.getPath();
+			path = wordFacade.getPath();
 			path = path.concat(manuscriptName).concat("\\\\");
 			wordFacade.updateImagesWords(path, m);   //ho 978 parole e 9161 immagini
 		}else {

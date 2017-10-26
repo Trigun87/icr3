@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 public class GetImagePath extends GetManuscriptPath{
 	@Override
 	public String getPath() {
-		String path = this.getServletContext().getInitParameter("pathImage");
+		String path = System.getProperty("user.dir") + this.getServletContext().getInitParameter("pathImage");
     	return path;
 	}
 
