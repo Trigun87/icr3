@@ -137,9 +137,12 @@ var ExtendedCanvas = (function() {
         this.element = canvas = document.createElement('canvas');
         context = this.element.getContext('2d');
         loadImage.call(this, imageSrc, function(image) {
-            canvas.setAttribute('width', image.width);
-            canvas.setAttribute('height', image.height);
-            context.drawImage(image,0,0);
+            canvas.setAttribute('width', image.width*3);
+            canvas.setAttribute('height', image.height*3);
+            context.webkitImageSmoothingEnabled = false;
+            context.mozImageSmoothingEnabled = false;
+            context.imageSmoothingEnabled = false; /// future
+            context.drawImage(image,0,0,image.width*3, image.height*3);
             data = context.getImageData(0,0,canvas.width, canvas.height);
             dataOrigArr = context.getImageData(0,0,canvas.width, canvas.height).data;
             dataOrig = canvas.toDataURL();
@@ -196,7 +199,7 @@ var ExtendedCanvas = (function() {
             return;
         }
 
-        fillColor = fillColor || [255,0,0,10];
+        fillColor = fillColor || [0,0,0,255];
         var color = this.getPixelColor(x, y).join();
 
         if(color === fillColor || color === [255,255,255,255].join()) {

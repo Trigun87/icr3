@@ -73,14 +73,7 @@
 							${errStudenti}
 						</div>
 
-						<div class="field-wrap">
-							<label> #Caratteri/Parole </label>
-							<form:input type="text" value="${job.numberOfImages}"
-								path='numberOfImages' placeholder="Numero Immagini/Parole"
-								onBlur="isnum(this)" />
-							${errImages}
-						</div>
-
+			
 						<form:input type="hidden" value="1" path='taskSize'
 							placeholder="Dimensione Task" onBlur="isnum(this)" />
 

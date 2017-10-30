@@ -14,18 +14,17 @@ import javax.persistence.OneToMany;
 
 @Entity
 public class Job {
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 	@Column(nullable = false)
 	private String title;
 	private String description;
-	@Column(nullable=false)
+	@Column(nullable = false)
 	private Integer taskSize;
-	private Integer numberOfImages;
 	private Integer numberOfWords;
-	@Column(nullable=false)
+	@Column(nullable = false)
 	private Integer numberOfStudents;
 	private String difficulty;
 	@ManyToOne
@@ -34,23 +33,20 @@ public class Job {
 	private List<Image> images;
 	@ManyToMany
 	private List<Word> words;
-	@OneToMany(mappedBy="job")
-	private List<Task> tasks; 
+	@OneToMany(mappedBy = "job")
+	private List<Task> tasks;
 	@ManyToOne
 	private Symbol symbol;
-	
+
 	public Job() {
 		this.tasks = new ArrayList<>();
 	}
-	
-	public Job(Long id, String title, Integer taskSize, 
-			Integer numberOfImages, Integer numberOfStudents, 
-			List<Image> images, List<Task> tasks, 
+
+	public Job(Long id, String title, Integer taskSize, Integer numberOfStudents, List<Image> images, List<Task> tasks,
 			Symbol symbol) {
 		this.id = id;
 		this.title = title;
 		this.taskSize = taskSize;
-		this.numberOfImages = numberOfImages;
 		this.numberOfStudents = numberOfStudents;
 		this.images = images;
 		this.tasks = tasks;
@@ -71,14 +67,6 @@ public class Job {
 
 	public void setSymbol(Symbol symbol) {
 		this.symbol = symbol;
-	}
-
-	public Integer getNumberOfImages() {
-		return numberOfImages;
-	}
-
-	public void setNumberOfImages(Integer numberOfImages) {
-		this.numberOfImages = numberOfImages;
 	}
 
 	public String getDifficulty() {
@@ -136,19 +124,19 @@ public class Job {
 	public void setTasks(List<Task> tasks) {
 		this.tasks = tasks;
 	}
-	
+
 	public String getDescription() {
 		return description;
 	}
-	
+
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	
+
 	public Manuscript getManuscript() {
 		return manuscript;
 	}
-	
+
 	public void setManuscript(Manuscript manuscript) {
 		this.manuscript = manuscript;
 	}
@@ -168,12 +156,9 @@ public class Job {
 	public void setWords(List<Word> words) {
 		this.words = words;
 	}
-	
-	public void addTask(Task task){
+
+	public void addTask(Task task) {
 		this.tasks.add(task);
 	}
-	
-
-	
 
 }

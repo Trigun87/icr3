@@ -169,7 +169,7 @@ public class AdminController {
 		model.addAttribute("job",job);
 		model.addAttribute("task",task);
 		model.addAttribute("manuscript", manuscript);
-		Integer number = job.getNumberOfImages();
+		Integer number = 1000;
 		Boolean bool = false;
 		List<Word> jobWords = null;
 		List<Image> imagesTask = null;
@@ -180,7 +180,7 @@ public class AdminController {
 
 			bool=true;
 		}else{ 
-			imagesTask = this.imageFacade.getImagesForTypeAndManuscriptName(job.getSymbol().getType(), manuscript.getName(),job.getNumberOfImages());
+			imagesTask = this.imageFacade.getImagesForTypeAndManuscriptName(job.getSymbol().getType(), manuscript.getName(),number);
 			job.setImages(imagesTask);
 
 		}
