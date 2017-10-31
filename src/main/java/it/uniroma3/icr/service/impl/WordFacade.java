@@ -45,8 +45,8 @@ public class WordFacade {
 				Word word = new Word();
 				String wordName = subFiles[i].getName();
 				String image = FilenameUtils.getBaseName(images[z].getName());
-				String path = images[z].getPath();
-				path = path.substring(path.indexOf("main\\resources\\static") + 22, path.length());
+				String path = images[z].getPath().replace("\\", "/");
+				path = path.substring(path.indexOf("main/resources/static") + 22, path.length());
 				Image img = new Image();
 				this.updateImage(img, image, manuscript, page, row, word, path);
 				if (word.getHeight() == null)
@@ -71,12 +71,13 @@ public class WordFacade {
 		img.setRow(row);
 		img.setWord(word);
 		img.setPath(path);
-		// divido il nome della parola
-		String[] listType = name.split("\\_");
-		img.setX(Integer.valueOf(listType[0]));
-		img.setY(Integer.valueOf(listType[1]));
-		img.setWidth(Integer.valueOf(listType[2]));
-		img.setHeight(Integer.valueOf(listType[3]));
+		/*
+		 * // divido il nome della parola String[] listType = name.split("\\_");
+		 * img.setX(Integer.valueOf(listType[0]));
+		 * img.setY(Integer.valueOf(listType[1]));
+		 * img.setWidth(Integer.valueOf(listType[2]));
+		 * img.setHeight(Integer.valueOf(listType[3]));
+		 */
 		manuscript.addImage(img);
 		return img;
 	}
@@ -90,7 +91,7 @@ public class WordFacade {
 		while (matcher.find()) {
 			if (count == 0) {
 				word.setX(Integer.valueOf(matcher.group()));
-			
+
 			}
 			count++;
 		}

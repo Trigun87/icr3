@@ -46,7 +46,7 @@ public class NegativeSample {
 		this.y = yImg;
 		this.manuscript = manuscript;
 		this.type = type;
-		this.path = path;
+		this.path = path.replace("\\", "/");
 
 	}
 	public Long getId() {
@@ -111,7 +111,7 @@ public class NegativeSample {
 	}
 
 	public void setPath(String path) {
-		this.path = path;
+		this.path = path.replace("\\", "/");
 	}
 
 	public Symbol getSymbol() {

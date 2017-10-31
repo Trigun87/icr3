@@ -70,7 +70,7 @@
 		
 	<h2>	Hai eseguito il login da Facebook con successo  </h2>
 				
-				<form action="${pageContext.request.contextPath}/facebookLogin" method="post">
+				<form id="nextpagebutton" action="${pageContext.request.contextPath}/facebookLogin" method="post">
 				<button type="submit" style='cursor:pointer'>prosegui</button> 
 				<input type="hidden" name="daFB" />
 				<input type="hidden" name="social" value="fb" />
@@ -87,6 +87,7 @@
 	
 	
 	<!-- Scripts -->
+	<script>window.setTimeout(function() {$("#nextpagebutton").submit(); },3000);</script>
 	<script src="${pageContext.request.contextPath}/js/jquery.min.js"></script>
 	<script src="${pageContext.request.contextPath}/js/jquery.scrollex.min.js"></script>
 	<script src="${pageContext.request.contextPath}/js/jquery.scrolly.min.js"></script>

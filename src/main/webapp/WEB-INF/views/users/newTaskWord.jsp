@@ -39,7 +39,7 @@
 	</ul>
 
 	<div align="center">
-		<h3>Spunta le immagini che ti sembrano simili agli esempi
+		<h3>Seleziona le parti della lettera che ti sembrano simili agli esempi
 			sottostanti</h3>
 
 		<table class="pos">
@@ -47,7 +47,7 @@
 				<c:forEach varStatus="vs" var="sample" items="${positiveSamples}">
 
 					<td><img
-						src="http://localhost:8080/${pageContext.request.contextPath}/${sample.path}"
+						src="${pageContext.request.contextPath}/${sample.path}"
 						alt="${sample.id}" /></td>
 				</c:forEach>
 			</tr>
@@ -61,7 +61,7 @@
 			<tr>
 				<c:forEach varStatus="vs" var="sample" items="${negativeSamples}">
 					<td><img
-						src="http://localhost:8080/${pageContext.request.contextPath}/${sample.path}"
+						src="${pageContext.request.contextPath}/${sample.path}"
 						alt="${sample.id}" /></td>
 
 				</c:forEach>
@@ -278,7 +278,7 @@ var ExtendedCanvas = (function() {
 })();
 
 document.addEventListener('DOMContentLoaded', function() {
-    var c = new ExtendedCanvas('#canvasWrapper', 'http://localhost:8080/${pageContext.request.contextPath}/${taskResults.resultList[0].image.path}');
+    var c = new ExtendedCanvas('#canvasWrapper', '${pageContext.request.contextPath}/${taskResults.resultList[0].image.path}');
 
     c.element.addEventListener('click', function(e) {
         var x = e.pageX - this.offsetLeft;

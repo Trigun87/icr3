@@ -14,8 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -27,9 +25,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import it.uniroma3.icr.model.Symbol;
-import it.uniroma3.icr.model.Task;
-import it.uniroma3.icr.model.Word;
 import it.uniroma3.icr.model.Administrator;
 import it.uniroma3.icr.model.ComparatoreSimboloPerNome;
 import it.uniroma3.icr.model.Image;
@@ -39,6 +34,17 @@ import it.uniroma3.icr.model.NegativeSample;
 import it.uniroma3.icr.model.Result;
 import it.uniroma3.icr.model.Sample;
 import it.uniroma3.icr.model.Student;
+import it.uniroma3.icr.model.Symbol;
+import it.uniroma3.icr.model.Task;
+import it.uniroma3.icr.model.Word;
+import it.uniroma3.icr.service.editor.SymbolEditor;
+import it.uniroma3.icr.service.impl.AdminFacade;
+import it.uniroma3.icr.service.impl.ImageFacade;
+import it.uniroma3.icr.service.impl.JobFacade;
+import it.uniroma3.icr.service.impl.ManuscriptService;
+import it.uniroma3.icr.service.impl.NegativeSampleService;
+import it.uniroma3.icr.service.impl.SampleService;
+import it.uniroma3.icr.service.impl.StudentFacade;
 import it.uniroma3.icr.service.impl.SymbolFacade;
 import it.uniroma3.icr.service.impl.TaskFacade;
 import it.uniroma3.icr.service.impl.WordFacade;
@@ -50,14 +56,6 @@ import it.uniroma3.icr.view.StudentsProductivity;
 import it.uniroma3.icr.view.SymbolsAnswers;
 import it.uniroma3.icr.view.TaskTimes;
 import it.uniroma3.icr.view.Voting;
-import it.uniroma3.icr.service.editor.SymbolEditor;
-import it.uniroma3.icr.service.impl.AdminFacade;
-import it.uniroma3.icr.service.impl.ImageFacade;
-import it.uniroma3.icr.service.impl.JobFacade;
-import it.uniroma3.icr.service.impl.ManuscriptService;
-import it.uniroma3.icr.service.impl.NegativeSampleService;
-import it.uniroma3.icr.service.impl.SampleService;
-import it.uniroma3.icr.service.impl.StudentFacade;
 
 @Controller
 
@@ -169,7 +167,7 @@ public class AdminController {
 		model.addAttribute("job",job);
 		model.addAttribute("task",task);
 		model.addAttribute("manuscript", manuscript);
-		Integer number = 1000;
+		Integer number = 5;
 		Boolean bool = false;
 		List<Word> jobWords = null;
 		List<Image> imagesTask = null;
@@ -230,25 +228,25 @@ public class AdminController {
 		this.manuscriptService.saveManuscript(manuscript);
 		Manuscript m = this.manuscriptService.findManuscriptByName(manuscriptName);
 		String path = symbolFacade.getPath();
-		path = path.concat(manuscriptName).concat("\\\\");
+		path = path.concat(manuscriptName).concat("/");
 		symbolFacade.insertSymbolInDb(path, m);
 		path = sampleService.getPath();
-		path = path.concat(manuscriptName).concat("\\\\");
+		path = path.concat(manuscriptName).concat("/");
 		sampleService.getSampleImage(path, m);
 		path = negativeSampleService.getNegativePath();
-		path = path.concat(manuscriptName).concat("\\\\");
+		path = path.concat(manuscriptName).concat("/");
 		negativeSampleService.getNegativeSampleImage(path, m); // negativeSampleImage(path);
 		String action = request.getParameter("action");
 		String wordString = "WORD";
 		String imageString = "IMAGE";
 		if(wordString.equals(action)) {
 			path = wordFacade.getPath();
-			path = path.concat(manuscriptName).concat("\\\\");
+			path = path.concat(manuscriptName).concat("/");
 			wordFacade.updateImagesWords(path, m);   //ho 978 parole e 9161 immagini
 		}else {
 			if(imageString.equals(action)) {
 				path = imageFacade.getPath();
-				path = path.concat(manuscriptName).concat("\\\\");
+				path = path.concat(manuscriptName).concat("/");
 				wordFacade.updateImagesWords(path, m);
 				//imageFacade.getListImageProperties(path, m);
 			}

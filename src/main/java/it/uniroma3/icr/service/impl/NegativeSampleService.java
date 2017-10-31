@@ -45,7 +45,7 @@ public class NegativeSampleService {
 
 					String nameComplete = images[m].getName();
 
-					String pathFile = images[m].getPath();
+					String pathFile = images[m].getPath().replace("\\", "/");
 
 
 					String name = FilenameUtils.getBaseName(nameComplete);
@@ -65,8 +65,7 @@ public class NegativeSampleService {
 						int height = f.getHeight();
 						int xImg = x;
 						int yImg = y;
-						System.out.println(pathFile);
-						String path = pathFile.substring(pathFile.indexOf("main\\resources\\static")+22, pathFile.length());
+						String path = pathFile.substring(pathFile.indexOf("main/resources/static")+22, pathFile.length());
 
 						String type = typeSymbol;
 

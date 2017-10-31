@@ -48,7 +48,7 @@ public class Sample {
 		this.y = yImg;
 		this.manuscript = manuscript;
 		this.type = type;
-		this.path = path;
+		this.path = path.replace("\\", "/");
 	}
 
 	// getter e setter
@@ -114,7 +114,7 @@ public class Sample {
 	}
 
 	public void setPath(String path) {
-		this.path = path;
+		this.path = path.replace("\\", "/");
 	}
 
 	public Symbol getSymbol() {

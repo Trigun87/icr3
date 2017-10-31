@@ -22,22 +22,7 @@
 </head>
 <body class="landing" onload="">
 
-	<!-- Header -->
-	<header id="header" class="alt">
-
-		<nav id="nav">
-			<ul>
-				<li class="special"><a href="#menu" class="menuToggle"><span>Menu</span></a>
-					<div id="menu">
-						<ul>
-							<li><a href="homeAdmin">Torna alla pagina di
-									amministrazione</a></li>
-							<li><a href="logout">Logout</a></li>
-						</ul>
-					</div></li>
-			</ul>
-		</nav>
-	</header>
+	<jsp:include page="menu.jsp" />
 	<!-- Banner -->
 	<section id="banner">
 		<div class="inner">

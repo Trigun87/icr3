@@ -1,4 +1,3 @@
-#import.sql file
 -- insert admin//admin
 insert into Administrator (id, password, role, username) VALUES ('1', 'admin', 'ROLE_ADMIN', 'admin');
 -- insert student a//a

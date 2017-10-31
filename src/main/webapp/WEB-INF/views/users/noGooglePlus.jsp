@@ -18,36 +18,7 @@
 
 </head>
 <body class="landing">
-	<!-- Page Wrapper -->
-	<div id="page-wrapper">
-
-		<!-- Header -->
-		<header id="header" class="alt">
-			
-			<nav id="nav">
-				<ul>
-					<li class="special"><a href="#menu" class="menuToggle"><span>Menu</span></a>
-						<div id="menu">
-							<ul>
-								<li>
-								<form name="submitForm2" method="POST" action="${pageContext.request.contextPath}/connect/google">
-    								<input type="hidden" name="_method" value="delete" />
-   									 <A HREF="javascript:document.submitForm2.submit()" style="
-   									 		border: 0;
-											font-size: 0.8em;
-											letter-spacing: 0.225em;
-											text-decoration: none;
-											text-transform: uppercase;">
-									Logout
-									</A>
-								</form>
-								</li>
-							</ul>
-						</div></li>
-				</ul>
-			</nav>
-		</header>
-	</div>
+	<jsp:include page="menu.jsp" />
 
 	<!-- Banner -->
 	<section id="banner">

@@ -27,22 +27,7 @@
 
 </head>
 <body class="landing">
-	<!-- Header -->
-	<header id="header" class="alt">
-
-		<nav id="nav">
-			<ul>
-				<li class="special"><a href="#menu" class="menuToggle"><span>Menu</span></a>
-					<div id="menu">
-						<ul>
-							<li><a href="homeAdmin">Torna alla pagina di
-									amministrazione</a></li>
-							<li><a href="logout">Logout</a></li>
-						</ul>
-					</div></li>
-			</ul>
-		</nav>
-	</header>
+	<jsp:include page="menu.jsp" />
 	<br>
 	<h1>Inserimento Manoscritto nel database</h1>
 	<div class="form">
@@ -65,9 +50,6 @@
 								
 								<button type="submit" class="button button-block"
 									onclick="ButtonClicked()" name="action" value="WORD"> PROSEGUI CON PAROLE</button>
-								<br>
-								<button type="submit" class="button button-block"
-									onclick="ButtonClicked()" name="action" value="IMAGE"> PROSEGUI CON CARATTERI</button>
 								
 							</div>
 						</div>

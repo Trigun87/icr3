@@ -16,8 +16,6 @@ public class Image {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
-	private int x;
-	private int y;
 	private int width;
 	private int height;
 	private String page;
@@ -36,12 +34,10 @@ public class Image {
 	// costruttori
 	public Image() {}
 
-	public Image(Long id, int x, int y, int width, int height,String page, Manuscript manuscript, String type,
+	public Image(Long id, int width, int height,String page, Manuscript manuscript, String type,
 			List<Job> jobs, List<Result> results) {
 		super();
 		this.id = id;
-		this.x = x;
-		this.y = y;
 		this.width = width;
 		this.height = height;
 		this.page = page;
@@ -51,15 +47,13 @@ public class Image {
 		this.results = results;
 	}
 
-	public Image (int width, int height, String type, Manuscript manuscript, String page, int x,int y,String path) {
+	public Image (int width, int height, String type, Manuscript manuscript, String page,String path) {
 		this.width = width;
 		this.height = height;
 		this.type = type;
 		this.manuscript = manuscript;
 		this.page = page;
-		this.x = x;
-		this.y = y;
-		this.path = path;
+		this.path = path.replace("\\", "/");
 	}
 
 	//	getter e setter	
@@ -69,22 +63,6 @@ public class Image {
 
 	public void setId(Long id) {
 		this.id = id;
-	}
-
-	public int getX() {
-		return x;
-	}
-
-	public void setX(int x) {
-		this.x = x;
-	}
-
-	public int getY() {
-		return y;
-	}
-
-	public void setY(int y) {
-		this.y = y;
 	}
 
 	public int getWidth() {
@@ -157,7 +135,7 @@ public class Image {
 	}
 
 	public void setPath(String path) {
-		this.path = path;
+		this.path = path.replace("\\", "/");
 	}
 
 	public Word getWord() {

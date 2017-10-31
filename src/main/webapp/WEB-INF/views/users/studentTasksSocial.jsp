@@ -30,55 +30,7 @@
 </head>
 <body class="landing">
 
-	<!-- Page Wrapper -->
-	<div id="page-wrapper">
-
-		<!-- Header -->
-		<header id="header" class="alt">
-
-			<nav id="nav">
-				<ul>
-					<li class="special"><a href="#menu" class="menuToggle"><span>Menu</span></a>
-						<div id="menu">
-							<ul>
-								<li><a href="homeStudentSocial?social=${social}">Torna alla pagine dello
-										studente</a></li>
-								<c:if test="${social=='fb'}">
- 									<li><form name="submitForm1" method="POST" action="${pageContext.request.contextPath}/connect/facebook">
-    								<input type="hidden" name="_method" value="delete" />
-   									 <A HREF="javascript:document.submitForm1.submit()" style="
-   									 		border: 0;
-											font-size: 0.8em;
-											letter-spacing: 0.225em;
-											text-decoration: none;
-											text-transform: uppercase;">
-									Logout
-									</A>
-									</form>	
-									</li>
- 								</c:if>
-								
-								<c:if test="${social=='goo'}">
-								<li>
-								<form name="submitForm2" method="POST" action="${pageContext.request.contextPath}/connect/google">
-    								<input type="hidden" name="_method" value="delete" />
-   									 <A HREF="javascript:document.submitForm2.submit()" style="
-   									 		border: 0;
-											font-size: 0.8em;
-											letter-spacing: 0.225em;
-											text-decoration: none;
-											text-transform: uppercase;">
-									Logout
-									</A>
-								</form>
-								</li>
-								</c:if>
-							</ul>
-						</div></li>
-				</ul>
-			</nav>
-		</header>
-	</div>
+	<jsp:include page="menu.jsp" />
 
 	<div class="relative">
 		<h2>Task Effettuati da: ${s.name}</h2>

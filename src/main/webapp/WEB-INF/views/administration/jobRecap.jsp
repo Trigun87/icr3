@@ -22,23 +22,7 @@
 </head>
 <body class="landing" onload="">
 
-	<!-- Header -->
-	<header id="header" class="alt">
-
-		<nav id="nav">
-			<ul>
-				<li class="special"><a href="#menu" class="menuToggle"><span>Menu</span></a>
-					<div id="menu">
-						<ul>
-							<li><a href="toSelectManuscript">Crea un nuovo Job</a></li>
-							<li><a href="homeAdmin">Torna alla pagina di
-									amministrazione</a></li>
-							<li><a href="logout">Logout</a></li>
-						</ul>
-					</div></li>
-			</ul>
-		</nav>
-	</header>
+	<jsp:include page="menu.jsp" />
 	<div class="relative">
 		<h2>Riepilogo del Job creato</h2>
 	</div>
@@ -47,7 +31,6 @@
 		<tr>
 			<th>Titolo</th>
 			<th>Numero di Studenti</th>
-			<th>Numero di Caratteri</th>
 			<th>Numero di Parole</th>
 			<th>Dimensione del Task</th>
 			<th>Manoscritto</th>
@@ -57,7 +40,6 @@
 		<tr>
 			<th>${job.title}</th>
 			<th>${job.students}</th>
-			<th>${job.numberOfImages}</th>
 			<th>${job.numberOfWords}</th>
 			<th>${job.taskSize}</th>
 			<th>${manuscript.name}</th>

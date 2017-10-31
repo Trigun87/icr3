@@ -33,7 +33,7 @@ input[name="resultList[${vs.index}].answer"] {
 
 input[name="resultList[${vs.index}].answer"]+label {
 	background:
-		url("http://localhost:8080/${pageContext.request.contextPath}/${result.image.path}")
+		url("${pageContext.request.contextPath}/${result.image.path}")
 		no-repeat;
 	background-size: contain;
 	height: ${result.image.height*4}px;
@@ -45,7 +45,7 @@ input[name="resultList[${vs.index}].answer"]+label {
 
 input[name="resultList[${vs.index}].answer"]:checked+label {
 	background:
-		url("http://localhost:8080/${pageContext.request.contextPath}/${result.image.path}")
+		url("${pageContext.request.contextPath}/${result.image.path}")
 		no-repeat;
 		background-size: contain;
 	height: ${result.image.height*4}px;
@@ -77,7 +77,7 @@ input[name="resultList[${vs.index}].answer"]:checked+label {
 			<tr>
 				<c:forEach varStatus="vs" var="sample" items="${positiveSamples}">
 
-					<td><img src="http://localhost:8080/${pageContext.request.contextPath}/${sample.path}" alt="${sample.id}" /></td>
+					<td><img src="${pageContext.request.contextPath}/${sample.path}" alt="${sample.id}" /></td>
 				</c:forEach>
 			</tr>
 		</table>
@@ -89,7 +89,7 @@ input[name="resultList[${vs.index}].answer"]:checked+label {
 		<table class="neg">
 			<tr>
 				<c:forEach varStatus="vs" var="sample" items="${negativeSamples}">
-					<td><img src="http://localhost:8080/${pageContext.request.contextPath}/${sample.path}" alt="${sample.id}" /></td>
+					<td><img src="${pageContext.request.contextPath}/${sample.path}" alt="${sample.id}" /></td>
 
 				</c:forEach>
 			</tr>

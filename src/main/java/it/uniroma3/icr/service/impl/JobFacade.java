@@ -34,7 +34,6 @@ public class JobFacade {
 	}
 	public void createJob(Job job, Manuscript manuscript, List<Word> jobWords, List<Image> imagesTask, Boolean bool, Integer number,Task task){
 		if(bool){
-		job.setNumberOfImages(0);
 		job.setNumberOfWords(number);
 		}
 		

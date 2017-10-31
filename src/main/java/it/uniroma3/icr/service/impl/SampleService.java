@@ -40,7 +40,7 @@ public class SampleService {
 				File[] images = transcriptionsSymbol[j].listFiles();
 				for(int m=0;m<images.length;m++) {
 					String nameComplete = images[m].getName();
-					String pathFile = images[m].getPath();
+					String pathFile = images[m].getPath().replace("\\", "/");
 					String name = FilenameUtils.getBaseName(nameComplete);
 					String parts[] = name.split("_");
 					int width = Integer.valueOf(parts[0]);
@@ -56,7 +56,7 @@ public class SampleService {
 						int height = f.getHeight();
 						int xImg = x;
 						int yImg = y;
-						String path = pathFile.substring(pathFile.indexOf("main\\resources\\static")+22, pathFile.length());
+						String path = pathFile.substring(pathFile.indexOf("main/resources/static")+22, pathFile.length());
 
 						String type = typeSymbol;
 

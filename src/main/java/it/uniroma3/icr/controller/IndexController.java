@@ -11,7 +11,6 @@ public class IndexController {
 
 	@RequestMapping(value="/",  method = RequestMethod.GET)
 	public String goToIndex() {
-		System.out.println(System.getProperty("user.dir"));
 		return "index";
 		
 	}
