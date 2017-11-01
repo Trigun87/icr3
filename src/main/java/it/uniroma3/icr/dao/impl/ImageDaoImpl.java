@@ -11,7 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import it.uniroma3.icr.dao.ImageDaoCustom;
 import it.uniroma3.icr.model.Image;
-import it.uniroma3.icr.model.Word;
 
 @Repository
 @Transactional(readOnly=false)

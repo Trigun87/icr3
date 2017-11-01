@@ -32,15 +32,15 @@ public class JobFacade {
 	public List<Job> retriveAlljobs() {
 		return this.jobDao.findAll();
 	}
-	public void createJob(Job job, Manuscript manuscript, List<Word> jobWords, List<Image> imagesTask, Boolean bool, Integer number,Task task){
+	public void createJob(Job job, Manuscript manuscript, List<Word> jobWords, List<Image> imagesTask, Boolean bool,Task task){
 		if(bool){
-		job.setNumberOfWords(number);
+		job.setNumberOfWords(manuscript.getWords().size());
 		}
 		
 		job.setManuscript(manuscript);
 		job.setWords(jobWords);
 		job.setImages(imagesTask);
 		this.addJob(job);
-		this.taskFacade.createTask(job, number, bool,task);
+		this.taskFacade.createTask(job, manuscript.getWords().size(), bool,task);
 	}
 }

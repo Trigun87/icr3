@@ -118,7 +118,6 @@ public class TaskController {
 	@RequestMapping(value = "user/secondConsoleWord", method = RequestMethod.POST)
 	public String taskRecapWord(@ModelAttribute("taskResults") TaskWrapper taskResults, Model model,
 			HttpServletRequest request, HttpServletResponse response) throws IOException {
-
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		String s = auth.getName();
 		Student student = studentFacade.findUser(s);
@@ -153,6 +152,7 @@ public class TaskController {
 			targetUrl = "users/homeStudent";
 		}
 
+		
 		return targetUrl;
 
 	}
