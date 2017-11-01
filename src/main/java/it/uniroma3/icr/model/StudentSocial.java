@@ -10,7 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
 @Entity
-public class StudentSocial {
+public class StudentSocial extends Student {
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
@@ -36,12 +36,16 @@ public class StudentSocial {
 
 	@Column(nullable=false)
 	private String role;
+	
+	@Column(nullable=true)
+	private String password;
 
 	@OneToMany(mappedBy="studentsocial")
 	private List<Task> tasks;
 
 	public StudentSocial() {
 		this.role = "ROLE_USER";
+		this.password = "passwordLUNGAperSOCIALma4EverInutile";
 	}
 
 	public List<Task> getTasks() {
@@ -92,7 +96,13 @@ public class StudentSocial {
 		this.username = username;
 	}
 
-	
+	public String getPassword() {
+		return "passwordLUNGAperSOCIALma4EverInutile";
+	}
+
+	public void setPassword(String password) {
+		this.password = "passwordLUNGAperSOCIALma4EverInutile";
+	}
 
 	public String getSchoolGroup() {
 		return schoolGroup;

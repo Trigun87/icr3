@@ -34,20 +34,18 @@ import it.uniroma3.icr.validator.studentValidator2;
 @Controller
 public class UserController {
 
-	
 	@Autowired
-	 private Facebook facebook;
-	
+	private Facebook facebook;
+
 	@Autowired
-	 private Google google;
-	
-	
+	private Google google;
+
 	@Autowired
 	private StudentFacade userFacade;
-	
+
 	@Autowired
 	private StudentFacadeSocial userFacadesocial;
-	
+
 	@Autowired
 	private AdminFacade adminFacade;
 
@@ -58,11 +56,11 @@ public class UserController {
 	private void initBinder(WebDataBinder binder) {
 		binder.setValidator(validator);
 	}
-	
-	@RequestMapping(value="/registration", method = RequestMethod.GET)
+
+	@RequestMapping(value = "/registration", method = RequestMethod.GET)
 	public String registrazione(@ModelAttribute Student student, Model model) {
 
-		Map<String,String> schoolGroups = new HashMap<String,String>();
+		Map<String, String> schoolGroups = new HashMap<String, String>();
 		schoolGroups.put("3", "3");
 		schoolGroups.put("4", "4");
 		schoolGroups.put("5", "5");
@@ -71,112 +69,82 @@ public class UserController {
 		return "registration";
 	}
 
-	
-	@RequestMapping(value="/addUser", method = RequestMethod.POST)
+	@RequestMapping(value = "/addUser", method = RequestMethod.POST)
 	public String confirmUser(@ModelAttribute Student student, Model model) {
 
-		Map<String,String> schoolGroups = new HashMap<String,String>();
+		Map<String, String> schoolGroups = new HashMap<String, String>();
 		schoolGroups.put("3", "3");
 		schoolGroups.put("4", "4");
 		schoolGroups.put("5", "5");
 		model.addAttribute("schoolGroups", schoolGroups);
-		
+
 		Student u = userFacade.findUser(student.getUsername());
-		
-		Administrator a= adminFacade.findAdmin(student.getUsername());
-	
-		if(studentValidator.validate(student,model,u,a)){
+
+		Administrator a = adminFacade.findAdmin(student.getUsername());
+
+		if (studentValidator.validate(student, model, u, a)) {
 			PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 			String passwordEncode = passwordEncoder.encode(student.getPassword());
 			student.setPassword(passwordEncode);
 			model.addAttribute("student", student);
 			userFacade.retrieveUser(student);
-			return "registrationRecap"; 
-			} 
-			else{
-				return "registration";
-			}
-
+			return "registrationRecap";
+		} else {
+			return "registration";
 		}
-	
-	
-	
-	
-	@RequestMapping(value="/addUserFromFB", method = RequestMethod.POST)
-	public String confirmUserFB(@ModelAttribute StudentSocial student, Model model, @Validated Student p, BindingResult bindingResult) {
 
-		Map<String,String> schoolGroups = new HashMap<String,String>();
+	}
+
+	@RequestMapping(value = "/addUserFromFB", method = RequestMethod.POST)
+	public String confirmUserFB(@ModelAttribute StudentSocial student, Model model, @Validated Student p,
+			BindingResult bindingResult) {
+
+		Map<String, String> schoolGroups = new HashMap<String, String>();
 		schoolGroups.put("3", "3");
 		schoolGroups.put("4", "4");
 		schoolGroups.put("5", "5");
 		model.addAttribute("schoolGroups", schoolGroups);
-		
+
 		StudentSocial u = userFacadesocial.findUser(student.getUsername());
-		
-		Administrator a= adminFacade.findAdmin(student.getUsername());
-	
-		/*if(bindingResult.hasErrors() || student.getName().isEmpty() || student.getSurname().isEmpty()) {
-			return "registration";
-		}*/
-		
-		/* String [] fields = {"email"};
-	     User user = facebook.fetchObject("me", User.class, fields);
-	     String emailFB= user.getEmail();
-		
-		if(!emailFB.equals(student.getUsername())){
-			model.addAttribute("errUsername","*Devi inserire la mail del tuo account facebook");
-			return "registrationFacebook"; 
-		}*/
-		
-		
-		if(studentValidator2.validate(student,model,u,a)){
+
+		Administrator a = adminFacade.findAdmin(student.getUsername());
+
+		if (studentValidator2.validate(student, model, u, a)) {
 			model.addAttribute("student", student);
 			userFacadesocial.retrieveUser(student);
-			model.addAttribute("social","fb");
-			return "registrationRecap"; 
-			} 
-			else{
-				return "registrationFacebook";
-			}
-
+			model.addAttribute("social", "fb");
+			return "registrationRecap";
+		} else {
+			return "registrationFacebook";
 		}
-	
-	
-	@RequestMapping(value="/addUserFromGoogle", method = RequestMethod.POST)
-	public String confirmUserGoogle(@ModelAttribute StudentSocial student, Model model, @Validated Student p, BindingResult bindingResult) {
 
-		Map<String,String> schoolGroups = new HashMap<String,String>();
+	}
+
+	@RequestMapping(value = "/addUserFromGoogle", method = RequestMethod.POST)
+	public String confirmUserGoogle(@ModelAttribute StudentSocial student, Model model, @Validated Student p,
+			BindingResult bindingResult) {
+
+		Map<String, String> schoolGroups = new HashMap<String, String>();
 		schoolGroups.put("3", "3");
 		schoolGroups.put("4", "4");
 		schoolGroups.put("5", "5");
 		model.addAttribute("schoolGroups", schoolGroups);
-		
+
 		StudentSocial u = userFacadesocial.findUser(student.getUsername());
-		Administrator a= adminFacade.findAdmin(student.getUsername());
-	
-		/*if(bindingResult.hasErrors() || student.getName().isEmpty() || student.getSurname().isEmpty()) {
-			return "registration";
-		}*/
-		
-		/*String emailGoogle=google.userOperations().getUserInfo().getEmail();
-		if(!emailGoogle.equals(student.getUsername())){	
-			model.addAttribute("errUsername","*Devi inserire la mail del tuo account google");
-			return "registrationGoogle"; //
-		}*/
-     
-		if(studentValidator2.validate(student,model,u,a)){
+		Administrator a = adminFacade.findAdmin(student.getUsername());
+
+		if (studentValidator2.validate(student, model, u, a)) {
 			model.addAttribute("student", student);
 			userFacadesocial.retrieveUser(student);
-			model.addAttribute("social","goo");
-			return "registrationRecap"; 
-			} 
-			else{
-				return "registrationGoogle";
-			}
-
+			model.addAttribute("social", "goo");
+			return "registrationRecap";
+		} else {
+			return "registrationGoogle";
 		}
-	
-	@RequestMapping(value="user/toChangeStudentPassword")
+
+	}
+
+	@RequestMapping(value = "user/toChangeStudentPassword")
 	public String toChangePassword(Model model) {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		String username = auth.getName();
@@ -187,14 +155,14 @@ public class UserController {
 
 	}
 
-	@RequestMapping(value="user/changeStudentPassword", method = RequestMethod.POST)
+	@RequestMapping(value = "user/changeStudentPassword", method = RequestMethod.POST)
 	public String changePassword(@ModelAttribute Student student, Model model) {
-		if(student.getPassword().equals("") || student.getPassword()==null){
+		if (student.getPassword().equals("") || student.getPassword() == null) {
 			model.addAttribute("errPassword", "*Campo Obbligatorio");
 			model.addAttribute("student", student);
 			return "users/changeStudentPassword";
 		}
-		
+
 		PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 		String passwordEncode = passwordEncoder.encode(student.getPassword());
 		student.setPassword(passwordEncode);
@@ -202,24 +170,31 @@ public class UserController {
 		return "users/homeStudent";
 	}
 
-	@RequestMapping(value="/user/homeStudent")
-	public String toHomeStudent(@ModelAttribute Student student, Model model) {
+	@RequestMapping(value = "/user/homeStudent")
+	public String toHomeStudent(@ModelAttribute Student student, Model model, @ModelAttribute("social") String social) {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		String username = auth.getName();
-		student = userFacade.findUser(username);
+		if (social.isEmpty())
+			student = userFacade.findUser(username);
+		else
+			student = userFacadesocial.findUser(username);
 		model.addAttribute("student", student);
+		model.addAttribute("social", social);
 		return "users/homeStudent";
 	}
-	@RequestMapping(value="/user/homeStudentSocial")
-	public String toHomeStudentSocial(@ModelAttribute StudentSocial student, Model model,@ModelAttribute("social") String social) {
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		String username = auth.getName();
-		student = userFacadesocial.findUser(username);
-		model.addAttribute("student", student);
-		
-		model.addAttribute("social", social);
-		
-		return "users/homeStudentSocial";
-	}
+
+	/*
+	 * @RequestMapping(value = "/user/homeStudentSocial") public String
+	 * toHomeStudentSocial(@ModelAttribute StudentSocial student, Model model,
+	 * 
+	 * @ModelAttribute("social") String social) { Authentication auth =
+	 * SecurityContextHolder.getContext().getAuthentication(); String username =
+	 * auth.getName(); student = userFacadesocial.findUser(username);
+	 * model.addAttribute("student", student);
+	 * 
+	 * model.addAttribute("social", social);
+	 * 
+	 * return "users/homeStudentSocial"; }
+	 */
 
 }

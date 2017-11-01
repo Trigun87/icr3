@@ -19,27 +19,7 @@
 
 <body class="landing">
 
-	<!-- Page Wrapper -->
-	<div id="page-wrapper">
-
-		<!-- Header -->
-		<header id="header" class="alt">
-			
-			<nav id="nav">
-				<ul>
-					<li class="special"><a href="#menu" class="menuToggle"><span>Menu</span></a>
-						<div id="menu">
-							<ul>
-								<li><a href="homeStudent">Torna alla pagina dello
-										studente</a></li>
-								<li><a href="studentTasks">Task Effettuati</a></li>
-								<li><a href="logout">Logout</a></li>
-							</ul>
-						</div></li>
-				</ul>
-			</nav>
-		</header>
-	</div>
+	<jsp:include page="menu.jsp" />
 
 	<!-- Banner -->
 	<section id="banner">

@@ -69,7 +69,7 @@ public class GoogleController {
         	model.addAttribute("student", student);
         	social="goo";
         	redirectAttributes.addFlashAttribute("social", social);
-        	return "redirect:/user/homeStudentSocial";
+        	return "redirect:/user/homeStudent";
         }
         else{
         

@@ -76,160 +76,61 @@ public class TaskController {
 		return new TaskWrapper();
 	}
 
+	/*
+	 * @RequestMapping(value = "user/newTask", method = RequestMethod.GET) public
+	 * String taskChoose(@ModelAttribute Task task, @ModelAttribute Job
+	 * job, @ModelAttribute Result result,
+	 * 
+	 * @ModelAttribute("taskResults") TaskWrapper taskResults, Model model,
+	 * HttpServletRequest request) { Authentication auth =
+	 * SecurityContextHolder.getContext().getAuthentication(); String s =
+	 * auth.getName(); Student student = studentFacade.findUser(s);
+	 * model.addAttribute("student", student); task =
+	 * taskFacade.assignTask(student); if (task != null) {
+	 * 
+	 * List<Sample> positiveSamples =
+	 * sampleService.findAllSamplesBySymbolId(task.getJob().getSymbol().getId());
+	 * List<Sample> negativeSamples = negativeSampleService
+	 * .findAllNegativeSamplesBySymbolId(task.getJob().getSymbol().getId());
+	 * 
+	 * List<Result> listResults = resultFacade.findTaskResult(task); String url =
+	 * "users/newTaskWord";
+	 * 
+	 * taskResults.setResultList(listResults); for (Result r :
+	 * taskResults.getResultList()) {
+	 * r.getImage().setPath(r.getImage().getPath().replace(File.separatorChar,
+	 * '/')); } model.addAttribute("student", student);
+	 * 
+	 * model.addAttribute("positiveSamples", positiveSamples);
+	 * model.addAttribute("negativeSamples", negativeSamples);
+	 * 
+	 * model.addAttribute("task", task); model.addAttribute("taskResults",
+	 * taskResults); return url; }
+	 * 
+	 * return "users/goodBye"; }
+	 */
+
 	@RequestMapping(value = "user/newTask", method = RequestMethod.GET)
 	public String taskChoose(@ModelAttribute Task task, @ModelAttribute Job job, @ModelAttribute Result result,
-			@ModelAttribute("taskResults") TaskWrapper taskResults, Model model, HttpServletRequest request) {
+			@ModelAttribute("taskResults") TaskWrapper taskResults, Model model, HttpServletRequest request,
+			@RequestParam(name = "social", required = false) String social) {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		String s = auth.getName();
-		Student student = studentFacade.findUser(s);
+		model.addAttribute("social", social);
+		Student student;
+		if (social == null || social.isEmpty())
+			student = studentFacade.findUser(s);
+		else
+			student = studentFacadesocial.findUser(s);
 		model.addAttribute("student", student);
 		task = taskFacade.assignTask(student);
 		if (task != null) {
-
 			List<Sample> positiveSamples = sampleService.findAllSamplesBySymbolId(task.getJob().getSymbol().getId());
 			List<Sample> negativeSamples = negativeSampleService
 					.findAllNegativeSamplesBySymbolId(task.getJob().getSymbol().getId());
 
 			List<Result> listResults = resultFacade.findTaskResult(task);
 			String url = "users/newTaskWord";
-			/*
-			 * if(task.getJob().getWords()!=null){ ComparatoreResultPerWordeX c = new
-			 * ComparatoreResultPerWordeX(); listResults.sort(c); url = "users/newTaskWord";
-			 * 
-			 * }else{ Collections.shuffle(listResults); url = "users/newTaskImage"; }
-			 */
-			taskResults.setResultList(listResults);
-			for (Result r : taskResults.getResultList()) {
-				r.getImage().setPath(r.getImage().getPath().replace(File.separatorChar, '/'));
-			}
-			model.addAttribute("student", student);
-
-			model.addAttribute("positiveSamples", positiveSamples);
-			model.addAttribute("negativeSamples", negativeSamples);
-
-			model.addAttribute("task", task);
-			model.addAttribute("taskResults", taskResults);
-			return url;
-		}
-
-		return "users/goodBye";
-	}
-
-	@RequestMapping(value = "user/secondConsoleWord", method = RequestMethod.POST)
-	public String taskRecapWord(@ModelAttribute("taskResults") TaskWrapper taskResults, Model model,
-			HttpServletRequest request, HttpServletResponse response) throws IOException {
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		String s = auth.getName();
-		Student student = studentFacade.findUser(s);
-		model.addAttribute("student", student);
-
-		String action = request.getParameter("action");
-		String targetUrl = "";
-
-		String conferma1 = "Conferma e vai al prossimo task";
-		String conferma2 = "Conferma e torna alla pagina dello studente";
-
-		if (conferma1.equals(action)) {
-			for (Result result : taskResults.getResultList()) {
-				Task task = result.getTask();
-				taskFacade.updateEndDate(task);
-				if (result.getAnswer() == null)
-					result.setAnswer("[]");
-			}
-			resultFacade.updateListResult(taskResults);
-			response.sendRedirect("newTask");
-			targetUrl = "users/newTaskWord";
-		} else {
-			if (conferma2.equals(action)) {
-				for (Result result : taskResults.getResultList()) {
-					Task task = result.getTask();
-					taskFacade.updateEndDate(task);
-					if (result.getAnswer() == null)
-						result.setAnswer("[]");
-				}
-				resultFacade.updateListResult(taskResults);
-			}
-			targetUrl = "users/homeStudent";
-		}
-
-		
-		return targetUrl;
-
-	}
-
-	@RequestMapping(value = "user/secondConsole", method = RequestMethod.POST)
-	public String taskRecap(@ModelAttribute("taskResults") TaskWrapper taskResults, Model model,
-			HttpServletRequest request, HttpServletResponse response) throws IOException {
-
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		String s = auth.getName();
-		Student student = studentFacade.findUser(s);
-		model.addAttribute("student", student);
-
-		String action = request.getParameter("action");
-		String targetUrl = "";
-
-		String conferma1 = "Conferma e vai al prossimo task";
-		String conferma2 = "Conferma e torna alla pagina dello studente";
-
-		if (conferma1.equals(action)) {
-			for (Result result : taskResults.getResultList()) {
-				Task task = result.getTask();
-				taskFacade.updateEndDate(task);
-				if (result.getAnswer() == null)
-					result.setAnswer("[]");
-			}
-			resultFacade.updateListResult(taskResults);
-			response.sendRedirect("newTask");
-
-			targetUrl = "users/newTask";
-		} else {
-			if (conferma2.equals(action)) {
-				for (Result result : taskResults.getResultList()) {
-					Task task = result.getTask();
-					taskFacade.updateEndDate(task);
-					if (result.getAnswer() == null)
-						result.setAnswer("[]");
-				}
-				resultFacade.updateListResult(taskResults);
-			}
-			targetUrl = "users/homeStudent";
-		}
-
-		return targetUrl;
-
-	}
-
-	@RequestMapping(value = "user/studentTasks")
-	public String studentTasks(Model model) {
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		Student s = studentFacade.findUser(auth.getName());
-		List<Task> studentTasks = taskFacade.findTaskByStudent(s.getId());
-		Collections.sort(studentTasks, new ComparatorePerData());
-		model.addAttribute("studentTasks", studentTasks);
-		model.addAttribute("s", s);
-		return "users/studentTasks";
-	}
-
-	// -------------------------------------------------VERSIONE SOCIAL
-	// ---------------------------------------------------------------------
-	@RequestMapping(value = "user/newTaskSocial", method = RequestMethod.GET)
-	public String taskChoose2(@ModelAttribute Task task, @ModelAttribute Job job, @ModelAttribute Result result,
-			@ModelAttribute("taskResults") TaskWrapper taskResults, Model model, HttpServletRequest request,
-			@RequestParam("social") String social) {
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		String s = auth.getName();
-		model.addAttribute("social", social);
-		StudentSocial student = studentFacadesocial.findUser(s);
-		model.addAttribute("student", student);
-		task = taskFacade.assignTask2(student);
-		if (task != null) {
-			List<Sample> positiveSamples = sampleService.findAllSamplesBySymbolId(task.getJob().getSymbol().getId());
-			List<Sample> negativeSamples = negativeSampleService
-					.findAllNegativeSamplesBySymbolId(task.getJob().getSymbol().getId());
-
-			List<Result> listResults = resultFacade.findTaskResult(task);
-			String url = "users/newTaskWordSocial";
 			/*
 			 * if(task.getJob().getWords()!=null){ ComparatoreResultPerWordeX c = new
 			 * ComparatoreResultPerWordeX(); listResults.sort(c); url =
@@ -251,18 +152,52 @@ public class TaskController {
 			return url;
 		}
 
-		return "users/goodByeSocial";
+		return "users/goodBye";
 	}
+	/*
+	 * @RequestMapping(value = "user/secondConsoleWord", method =
+	 * RequestMethod.POST) public String
+	 * taskRecapWord(@ModelAttribute("taskResults") TaskWrapper taskResults, Model
+	 * model, HttpServletRequest request, HttpServletResponse response) throws
+	 * IOException { Authentication auth =
+	 * SecurityContextHolder.getContext().getAuthentication(); String s =
+	 * auth.getName(); Student student = studentFacade.findUser(s);
+	 * model.addAttribute("student", student);
+	 * 
+	 * String action = request.getParameter("action"); String targetUrl = "";
+	 * 
+	 * String conferma1 = "Conferma e vai al prossimo task"; String conferma2 =
+	 * "Conferma e torna alla pagina dello studente";
+	 * 
+	 * if (conferma1.equals(action)) { for (Result result :
+	 * taskResults.getResultList()) { Task task = result.getTask();
+	 * taskFacade.updateEndDate(task); if (result.getAnswer() == null)
+	 * result.setAnswer("[]"); } resultFacade.updateListResult(taskResults);
+	 * response.sendRedirect("newTask"); targetUrl = "users/newTaskWord"; } else {
+	 * if (conferma2.equals(action)) { for (Result result :
+	 * taskResults.getResultList()) { Task task = result.getTask();
+	 * taskFacade.updateEndDate(task); if (result.getAnswer() == null)
+	 * result.setAnswer("[]"); } resultFacade.updateListResult(taskResults); }
+	 * targetUrl = "users/homeStudent"; }
+	 * 
+	 * return targetUrl;
+	 * 
+	 * }
+	 */
 
-	@RequestMapping(value = "user/secondConsoleWordSocial", method = RequestMethod.POST)
-	public String taskRecapWord2(@ModelAttribute("taskResults") TaskWrapper taskResults, Model model,
-			HttpServletRequest request, HttpServletResponse response, @RequestParam("social") String social)
+	@RequestMapping(value = "user/secondConsoleWord", method = RequestMethod.POST)
+	public String taskRecapWord(@ModelAttribute("taskResults") TaskWrapper taskResults, Model model,
+			HttpServletRequest request, HttpServletResponse response, @RequestParam(name = "social", required = false) String social)
 			throws IOException {
 
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		String s = auth.getName();
 		model.addAttribute("social", social);
-		StudentSocial student = studentFacadesocial.findUser(s);
+		Student student;
+		if (social == null || social.isEmpty())
+			student = studentFacade.findUser(s);
+		else
+			student = studentFacadesocial.findUser(s);
 		model.addAttribute("student", student);
 
 		String action = request.getParameter("action");
@@ -279,8 +214,8 @@ public class TaskController {
 					result.setAnswer("No");
 			}
 			resultFacade.updateListResult(taskResults);
-			response.sendRedirect("newTaskSocial?social=" + social);
-			targetUrl = "users/newTaskWordSocial";
+			response.sendRedirect("newTask");
+			targetUrl = "users/newTaskWord";
 		} else {
 			if (conferma2.equals(action)) {
 				for (Result result : taskResults.getResultList()) {
@@ -291,21 +226,57 @@ public class TaskController {
 				}
 				resultFacade.updateListResult(taskResults);
 			}
-			targetUrl = "users/homeStudentSocial";
+			targetUrl = "users/homeStudent";
 		}
 
 		return targetUrl;
 
 	}
 
-	@RequestMapping(value = "user/secondConsoleSocial", method = RequestMethod.POST)
-	public String taskRecap2(@ModelAttribute("taskResults") TaskWrapper taskResults, Model model,
-			HttpServletRequest request, HttpServletResponse response, @RequestParam("social") String social)
+	/*
+	 * @RequestMapping(value = "user/secondConsole", method = RequestMethod.POST)
+	 * public String taskRecap(@ModelAttribute("taskResults") TaskWrapper
+	 * taskResults, Model model, HttpServletRequest request, HttpServletResponse
+	 * response) throws IOException {
+	 * 
+	 * Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+	 * String s = auth.getName(); Student student = studentFacade.findUser(s);
+	 * model.addAttribute("student", student);
+	 * 
+	 * String action = request.getParameter("action"); String targetUrl = "";
+	 * 
+	 * String conferma1 = "Conferma e vai al prossimo task"; String conferma2 =
+	 * "Conferma e torna alla pagina dello studente";
+	 * 
+	 * if (conferma1.equals(action)) { for (Result result :
+	 * taskResults.getResultList()) { Task task = result.getTask();
+	 * taskFacade.updateEndDate(task); if (result.getAnswer() == null)
+	 * result.setAnswer("[]"); } resultFacade.updateListResult(taskResults);
+	 * response.sendRedirect("newTask");
+	 * 
+	 * targetUrl = "users/newTask"; } else { if (conferma2.equals(action)) { for
+	 * (Result result : taskResults.getResultList()) { Task task = result.getTask();
+	 * taskFacade.updateEndDate(task); if (result.getAnswer() == null)
+	 * result.setAnswer("[]"); } resultFacade.updateListResult(taskResults); }
+	 * targetUrl = "users/homeStudent"; }
+	 * 
+	 * return targetUrl;
+	 * 
+	 * }
+	 */
+
+	@RequestMapping(value = "user/secondConsole", method = RequestMethod.POST)
+	public String taskRecap(@ModelAttribute("taskResults") TaskWrapper taskResults, Model model,
+			HttpServletRequest request, HttpServletResponse response, @RequestParam(name = "social", required = false) String social)
 			throws IOException {
 
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		String s = auth.getName();
-		StudentSocial student = studentFacadesocial.findUser(s);
+		Student student;
+		if (social == null || social.isEmpty())
+			student = studentFacade.findUser(s);
+		else
+			student = studentFacadesocial.findUser(s);
 		model.addAttribute("student", student);
 		model.addAttribute("social", social);
 		String action = request.getParameter("action");
@@ -322,9 +293,9 @@ public class TaskController {
 					result.setAnswer("No");
 			}
 			resultFacade.updateListResult(taskResults);
-			response.sendRedirect("newTaskSocial?social=" + social);
+			response.sendRedirect("newTask");
 
-			targetUrl = "users/newTaskSocial";
+			targetUrl = "users/newTask";
 		} else {
 			if (conferma2.equals(action)) {
 				for (Result result : taskResults.getResultList()) {
@@ -335,22 +306,42 @@ public class TaskController {
 				}
 				resultFacade.updateListResult(taskResults);
 			}
-			targetUrl = "users/homeStudentSocial";
+			targetUrl = "users/homeStudent";
 		}
 
 		return targetUrl;
 
 	}
 
-	@RequestMapping(value = "user/studentTasksSocial")
-	public String studentTasks2(Model model, @RequestParam("social") String social) {
+	/*
+	 * @RequestMapping(value = "user/studentTasks") public String studentTasks(Model
+	 * model) { Authentication auth =
+	 * SecurityContextHolder.getContext().getAuthentication(); Student s =
+	 * studentFacade.findUser(auth.getName()); List<Task> studentTasks =
+	 * taskFacade.findTaskByStudent(s.getId()); Collections.sort(studentTasks, new
+	 * ComparatorePerData()); model.addAttribute("studentTasks", studentTasks);
+	 * model.addAttribute("s", s); return "users/studentTasks"; }
+	 */
+
+	@RequestMapping(value = "user/studentTasks")
+	public String studentTasks(Model model, @RequestParam(name = "social", required = false) String social) {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		StudentSocial s = studentFacadesocial.findUser(auth.getName());
-		List<Task> studentTasks = taskFacade.findTaskByStudentSocial(s.getId());
+		Student s;
+		List<Task> studentTasks;
+		if (social == null || social.isEmpty()) {
+			s = studentFacade.findUser(auth.getName());
+			studentTasks = taskFacade.findTaskByStudent(s.getId());
+		}
+		else {
+			s = studentFacadesocial.findUser(auth.getName());
+			studentTasks = taskFacade.findTaskByStudentSocial(s.getId());
+		}
+		
 		Collections.sort(studentTasks, new ComparatorePerData());
 		model.addAttribute("studentTasks", studentTasks);
 		model.addAttribute("s", s);
 		model.addAttribute("social", social);
-		return "users/studentTasksSocial";
+		return "users/studentTasks";
 	}
+
 }
