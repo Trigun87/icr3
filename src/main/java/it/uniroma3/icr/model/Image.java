@@ -24,8 +24,8 @@ public class Image {
 	private String row;
 	@ManyToOne
 	private Manuscript manuscript;
-	@ManyToOne
-	private Word word;
+	//@ManyToOne
+	//private Word word;
 	@ManyToMany(mappedBy="images")
 	private List<Job> jobs;
 	@OneToMany(mappedBy="image")
@@ -137,7 +137,7 @@ public class Image {
 	public void setPath(String path) {
 		this.path = path.replace("\\", "/");
 	}
-
+/*
 	public Word getWord() {
 		return word;
 	}
@@ -145,7 +145,7 @@ public class Image {
 	public void setWord(Word word) {
 		this.word = word;
 	}
-
+*/
 	@Override
 	public String toString() {
 		return "Image [id=" + id ;

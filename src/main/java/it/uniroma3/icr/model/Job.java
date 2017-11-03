@@ -31,8 +31,8 @@ public class Job {
 	private Manuscript manuscript;
 	@ManyToMany
 	private List<Image> images;
-	@ManyToMany
-	private List<Word> words;
+	/*@ManyToMany
+	private List<Word> words;*/
 	@OneToMany(mappedBy = "job")
 	private List<Task> tasks;
 	@ManyToOne
@@ -148,7 +148,7 @@ public class Job {
 	public void setNumberOfWords(Integer numberOfWords) {
 		this.numberOfWords = numberOfWords;
 	}
-
+/*
 	public List<Word> getWords() {
 		return words;
 	}
@@ -156,7 +156,7 @@ public class Job {
 	public void setWords(List<Word> words) {
 		this.words = words;
 	}
-
+*/
 	public void addTask(Task task) {
 		this.tasks.add(task);
 	}

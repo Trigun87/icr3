@@ -264,22 +264,12 @@ public class TaskFacade {
 					this.addTask(task);
 					batchNumber++;
 				}
-				if (word) {
-					List<Image> images = job.getWords().get(r).getImages();
 
-					for (int j = 0; j < images.size(); j++) {
-						Result result = new Result();
-						result.setImage(images.get(j));
-						result.setTask(task);
-						this.resultFacade.addResult(result);
-					}
-				} else {
 					Image j = job.getImages().get(r);
 					Result result = new Result();
 					result.setImage(j);
 					result.setTask(task);
 					this.resultFacade.addResult(result);
-				}
 			}
 		}
 	}

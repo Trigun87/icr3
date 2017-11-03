@@ -8,12 +8,12 @@ import java.util.List;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import it.uniroma3.icr.dao.ImageDao;
 import it.uniroma3.icr.insertImageInDb.utils.GetImagePath;
 import it.uniroma3.icr.model.Image;
 import it.uniroma3.icr.model.Manuscript;
-import it.uniroma3.icr.model.Word;
 
 @Service
 public class ImageFacade {
@@ -38,11 +38,11 @@ public class ImageFacade {
 					File[] images = files[1].listFiles(); // prendo solo la cartella cut_point_view
 					for (int z = 0; z < images.length; z++) {
 						String image = FilenameUtils.getBaseName(images[z].getName());
-						Word word = new Word();
+						//Word word = new Word();
 						String path = images[z].getPath();
 						path = path.substring(path.indexOf("main/resources/static") + 22, path.length());
 						Image img = new Image();
-						this.updateImage(img, image, manuscript, page, row, word, path);
+						this.updateImage(img, image, manuscript, page, row, path);
 
 					}
 				}
@@ -85,14 +85,46 @@ public class ImageFacade {
 	 * in.close(); } catch (IOException e) { e.printStackTrace(); } } } } } } }
 	 */
 
-	public Image updateImage(Image img, String name, Manuscript manuscript, String page, String row, Word word,
+	@Transactional
+	public void updateImagesAll(String p, Manuscript manuscript) throws IOException {
+		File file = new File(p);
+		File[] subFiles = file.listFiles();
+		for (int i = 0; i < subFiles.length; i++) {
+			String page = subFiles[i].getName();
+			// File[] rows = subFiles[i].listFiles();
+			String row = subFiles[i].getName();
+
+			File[] images = subFiles[i].listFiles();
+
+			/*
+			 * for(int m=0; m<rows.length; m++) { String row = rows[m].getName(); File[]
+			 * words = rows[m].listFiles(); for(int y=0; y<words.length; y++){ String
+			 * wordName = words[y].getName(); Word word = new Word(); File[] files =
+			 * words[y].listFiles(); File[] images = files[1].listFiles(); //prendo solo la
+			 * cartella cut_point_view
+			 */
+			for (int z = 0; z < images.length; z++) {
+				String image = FilenameUtils.getBaseName(images[z].getName());
+				String path = images[z].getPath().replace("\\", "/");
+				path = path.substring(path.indexOf("main/resources/static") + 22, path.length());
+				Image img = new Image();
+				this.updateImage(img, image, manuscript, page, row, path);
+
+			}
+
+		}
+		// }
+		// }
+	}
+	
+	public Image updateImage(Image img, String name, Manuscript manuscript, String page, String row,
 			String path) {
 		// divido il path delle cartelle e lo rigiro per ottenere sempre per prime le
 		// info importanti
 		img.setManuscript(manuscript);
 		img.setPage(page);
 		img.setRow(row);
-		img.setWord(word);
+		//img.setWord(word);
 		img.setPath(path);
 		/*
 		 * //divido il nome della parola String[] listType = name.split("\\_");
@@ -119,6 +151,10 @@ public class ImageFacade {
 
 	public List<Image> getImagesForTypeAndManuscriptName(String type, String manuscript, int limit) {
 		return this.imageDao.findImageForTypeAndManuscriptName(type, manuscript, limit);
+	}
+	
+	public List<Image> getImagesFromManuscriptName(long manuscript) {
+		return this.imageDao.findImageFromManuscriptName(manuscript);
 	}
 
 	public List<Image> findImageForTypeAndWidthAndManuscript(String type, String manuscript, int width, int limit) {

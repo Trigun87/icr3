@@ -130,7 +130,7 @@ public class TaskController {
 					.findAllNegativeSamplesBySymbolId(task.getJob().getSymbol().getId());
 
 			List<Result> listResults = resultFacade.findTaskResult(task);
-			String url = "users/newTaskWord";
+			String url = "users/newTaskImage";
 			/*
 			 * if(task.getJob().getWords()!=null){ ComparatoreResultPerWordeX c = new
 			 * ComparatoreResultPerWordeX(); listResults.sort(c); url =
@@ -215,7 +215,7 @@ public class TaskController {
 			}
 			resultFacade.updateListResult(taskResults);
 			response.sendRedirect("newTask");
-			targetUrl = "users/newTaskWord";
+			targetUrl = "users/newTaskImage";
 		} else {
 			if (conferma2.equals(action)) {
 				for (Result result : taskResults.getResultList()) {

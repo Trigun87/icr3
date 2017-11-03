@@ -95,6 +95,7 @@
 				<button type=button id="undotoStart">RESTART</button>
 				<button type=button id="undo">UNDO</button>
 				<form:input type="hidden" id="output" path="resultList[${vs.index}].answer" /></div>
+				<br>
 				<label for="resultList[${vs.index}].id"></label>
 				<form:hidden path="resultList[${vs.index}].id" />
 				<form:hidden path="resultList[${vs.index}].image.id" />

@@ -27,8 +27,8 @@ public class Manuscript {
 	private List<Sample> samples;
 	@OneToMany(mappedBy = "manuscript")
 	private List<Symbol> symbols;
-	@OneToMany(mappedBy = "manuscript", cascade = CascadeType.ALL)
-	private List<Word> words;
+	//@OneToMany(mappedBy = "manuscript", cascade = CascadeType.ALL)
+	//private List<Word> words;
 	@OneToMany(mappedBy = "manuscript", cascade = CascadeType.ALL)
 	private List<NegativeSample> negativeSamples;
 	
@@ -39,7 +39,7 @@ public class Manuscript {
 		this.samples = new ArrayList<>();
 		this.symbols = new ArrayList<>();
 		this.negativeSamples = new ArrayList<>();
-		this.words = new ArrayList<>();
+		//this.words = new ArrayList<>();
 	}
 	
 	public Manuscript(String name){
@@ -94,13 +94,13 @@ public class Manuscript {
 		this.symbols = symbols;
 	}
 
-	public List<Word> getWords() {
+/*	public List<Word> getWords() {
 		return words;
 	}
 
 	public void setWords(List<Word> words) {
 		this.words = words;
-	}
+	}*/
 
 	public List<NegativeSample> getNegativeSamples() {
 		return negativeSamples;
@@ -123,10 +123,10 @@ public class Manuscript {
 		this.negativeSamples.add(negativeSample);
 	}
 
-	public void addWord(Word word) {
+/*	public void addWord(Word word) {
 		this.words.add(word);
 	}
-
+*/
 	public void addImage(Image img) {
 		this.images.add(img);
 	}

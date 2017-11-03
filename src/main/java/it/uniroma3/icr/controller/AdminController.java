@@ -36,7 +36,6 @@ import it.uniroma3.icr.model.Sample;
 import it.uniroma3.icr.model.Student;
 import it.uniroma3.icr.model.Symbol;
 import it.uniroma3.icr.model.Task;
-import it.uniroma3.icr.model.Word;
 import it.uniroma3.icr.service.editor.SymbolEditor;
 import it.uniroma3.icr.service.impl.AdminFacade;
 import it.uniroma3.icr.service.impl.ImageFacade;
@@ -47,7 +46,6 @@ import it.uniroma3.icr.service.impl.SampleService;
 import it.uniroma3.icr.service.impl.StudentFacade;
 import it.uniroma3.icr.service.impl.SymbolFacade;
 import it.uniroma3.icr.service.impl.TaskFacade;
-import it.uniroma3.icr.service.impl.WordFacade;
 import it.uniroma3.icr.validator.AdminValidator;
 import it.uniroma3.icr.validator.jobValidator;
 import it.uniroma3.icr.view.CorrectStudentsAnswer;
@@ -79,8 +77,8 @@ public class AdminController {
 	private SymbolFacade symbolFacade;;
 	@Autowired
 	private ImageFacade imageFacade;
-	@Autowired
-	private WordFacade wordFacade;
+	//@Autowired
+	//private WordFacade wordFacade;
 	@Autowired
 	private ManuscriptService manuscriptService;
 
@@ -175,11 +173,11 @@ public class AdminController {
 		model.addAttribute("manuscript", manuscript);
 		Integer number = 2000;
 		Boolean bool = false;
-		List<Word> jobWords = null;
+		// List<Word> jobWords = null;
 		List<Image> imagesTask = null;
-		if (manuscript.getWords() != null) {
+		if (manuscript.getImages() != null) {
 
-			jobWords = this.wordFacade.getWordsForManuscriptName(manuscript.getName(), manuscript.getWords().size());
+			imagesTask = this.imageFacade.getImagesFromManuscriptName(manuscript.getId());
 
 			bool = true;
 		} else {
@@ -190,7 +188,7 @@ public class AdminController {
 		}
 
 		if (jobValidator.validate(job, model)) {
-			this.facadeJob.createJob(job, manuscript, jobWords, imagesTask, bool, task);
+			this.facadeJob.createJob(job, manuscript, imagesTask, bool, task);
 			return "administration/jobRecap";
 		} else {
 			String manuscriptName = manuscript.getName();
@@ -226,8 +224,8 @@ public class AdminController {
 
 	@RequestMapping(value = "admin/insertManuscript")
 	public String insertManuscript(@ModelAttribute("manuscript") Manuscript manuscript, Model model,
-			HttpServletRequest request, @ModelAttribute Symbol symbol, @ModelAttribute Word word,
-			@ModelAttribute Image image, @ModelAttribute Sample sample, @ModelAttribute NegativeSample negativeSample)
+			HttpServletRequest request, @ModelAttribute Symbol symbol, @ModelAttribute Image image,
+			@ModelAttribute Sample sample, @ModelAttribute NegativeSample negativeSample)
 			throws FileNotFoundException, IOException {
 
 		String manuscriptName = manuscript.getName();
@@ -243,20 +241,11 @@ public class AdminController {
 		path = path.concat(manuscriptName).concat("/");
 		negativeSampleService.getNegativeSampleImage(path, m); // negativeSampleImage(path);
 		String action = request.getParameter("action");
-		String wordString = "WORD";
-		String imageString = "IMAGE";
-		if (wordString.equals(action)) {
-			path = wordFacade.getPath();
-			path = path.concat(manuscriptName).concat("/");
-			wordFacade.updateImagesWords(path, m); // ho 978 parole e 9161 immagini
-		} else {
-			if (imageString.equals(action)) {
-				path = imageFacade.getPath();
-				path = path.concat(manuscriptName).concat("/");
-				wordFacade.updateImagesWords(path, m);
-				// imageFacade.getListImageProperties(path, m);
-			}
-		}
+
+		path = imageFacade.getPath();
+		path = path.concat(manuscriptName).concat("/");
+		imageFacade.updateImagesAll(path, m); // ho 978 parole e 9161 immagini
+
 		this.manuscriptService.saveManuscript(manuscript);
 		return "administration/insertRecap";
 	}

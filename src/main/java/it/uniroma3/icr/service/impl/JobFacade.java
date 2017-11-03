@@ -10,7 +10,6 @@ import it.uniroma3.icr.model.Image;
 import it.uniroma3.icr.model.Job;
 import it.uniroma3.icr.model.Manuscript;
 import it.uniroma3.icr.model.Task;
-import it.uniroma3.icr.model.Word;
 
 @Service
 public class JobFacade {
@@ -32,15 +31,11 @@ public class JobFacade {
 	public List<Job> retriveAlljobs() {
 		return this.jobDao.findAll();
 	}
-	public void createJob(Job job, Manuscript manuscript, List<Word> jobWords, List<Image> imagesTask, Boolean bool,Task task){
-		if(bool){
-		job.setNumberOfWords(manuscript.getWords().size());
-		}
-		
+	public void createJob(Job job, Manuscript manuscript, List<Image> imagesTask, Boolean bool,Task task){
+		job.setNumberOfWords(imagesTask.size());	
 		job.setManuscript(manuscript);
-		job.setWords(jobWords);
 		job.setImages(imagesTask);
 		this.addJob(job);
-		this.taskFacade.createTask(job, manuscript.getWords().size(), bool,task);
+		this.taskFacade.createTask(job, imagesTask.size(), bool,task);
 	}
 }
