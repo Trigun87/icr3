@@ -11,35 +11,31 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
-
 @Entity
 public class Task {
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
-	
+
 	@Column(nullable = false)
 	private int batch;
-	
+
 	@Column
 	private java.sql.Timestamp startDate;
-	
+
 	@Column
 	private java.sql.Timestamp endDate;
-	
+
 	@ManyToOne
 	private Student student;
-	
-	@ManyToOne
-	private StudentSocial studentsocial;
-	
+
 	@ManyToOne
 	private Job job;
-	
-	@OneToMany(mappedBy="task")
+
+	@OneToMany(mappedBy = "task")
 	private List<Result> results;
-	
+
 	public Long getId() {
 		return id;
 	}
@@ -54,16 +50,6 @@ public class Task {
 
 	public void setStudent(Student student) {
 		this.student = student;
-	}
-	
-	
-
-	public StudentSocial getStudentsocial() {
-		return studentsocial;
-	}
-
-	public void setStudentsocial(StudentSocial studentsocial) {
-		this.studentsocial = studentsocial;
 	}
 
 	public Job getJob() {
@@ -82,14 +68,13 @@ public class Task {
 		this.results = results;
 	}
 
-	public Task(Long id, int batch, Timestamp startDate, Timestamp endDate, Student student,StudentSocial studentsocial, Job job,
+	public Task(Long id, int batch, Timestamp startDate, Timestamp endDate, Student student, Job job,
 			List<Result> results) {
 		this.id = id;
 		this.batch = batch;
 		this.startDate = startDate;
 		this.endDate = endDate;
 		this.student = student;
-		this.studentsocial=studentsocial;
 		this.job = job;
 		this.results = results;
 	}
@@ -111,9 +96,9 @@ public class Task {
 	}
 
 	public Task() {
-		
+
 	}
-	
+
 	public int getBatch() {
 		return batch;
 	}
@@ -126,5 +111,5 @@ public class Task {
 	public String toString() {
 		return "Task [id=" + id;
 	}
-	
+
 }

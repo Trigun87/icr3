@@ -26,7 +26,6 @@ import it.uniroma3.icr.model.Job;
 import it.uniroma3.icr.model.Result;
 import it.uniroma3.icr.model.Sample;
 import it.uniroma3.icr.model.Student;
-import it.uniroma3.icr.model.StudentSocial;
 import it.uniroma3.icr.model.Task;
 import it.uniroma3.icr.model.TaskWrapper;
 import it.uniroma3.icr.service.editor.ImageEditor;

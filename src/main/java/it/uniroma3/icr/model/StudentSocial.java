@@ -13,7 +13,7 @@ import javax.persistence.OneToMany;
 public class StudentSocial extends Student {
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 
 	@Column(nullable = false)
@@ -22,7 +22,7 @@ public class StudentSocial extends Student {
 	@Column(nullable = false)
 	private String surname;
 
-	@Column(nullable=false)
+	@Column(nullable = false)
 	private String school;
 
 	@Column(nullable = false)
@@ -34,13 +34,13 @@ public class StudentSocial extends Student {
 	@Column(nullable = false)
 	private String section;
 
-	@Column(nullable=false)
+	@Column(nullable = false)
 	private String role;
-	
-	@Column(nullable=true)
+
+	@Column(nullable = true)
 	private String password;
 
-	@OneToMany(mappedBy="studentsocial")
+	@OneToMany(mappedBy = "studentsocial")
 	private List<Task> tasks;
 
 	public StudentSocial() {

@@ -77,8 +77,8 @@ public class AdminController {
 	private SymbolFacade symbolFacade;;
 	@Autowired
 	private ImageFacade imageFacade;
-	//@Autowired
-	//private WordFacade wordFacade;
+	// @Autowired
+	// private WordFacade wordFacade;
 	@Autowired
 	private ManuscriptService manuscriptService;
 
@@ -171,21 +171,11 @@ public class AdminController {
 		model.addAttribute("job", job);
 		model.addAttribute("task", task);
 		model.addAttribute("manuscript", manuscript);
-		Integer number = 2000;
 		Boolean bool = false;
 		// List<Word> jobWords = null;
 		List<Image> imagesTask = null;
-		if (manuscript.getImages() != null) {
-
-			imagesTask = this.imageFacade.getImagesFromManuscriptName(manuscript.getId());
-
-			bool = true;
-		} else {
-			imagesTask = this.imageFacade.getImagesForTypeAndManuscriptName(job.getSymbol().getType(),
-					manuscript.getName(), number);
-			job.setImages(imagesTask);
-
-		}
+		imagesTask = this.imageFacade.getImagesFromManuscriptName(manuscript.getId());
+		bool = true;
 
 		if (jobValidator.validate(job, model)) {
 			this.facadeJob.createJob(job, manuscript, imagesTask, bool, task);

@@ -1,6 +1,5 @@
 package it.uniroma3.icr.service.impl;
 
-import java.math.BigInteger;
 import java.util.Calendar;
 import java.util.List;
 
@@ -17,7 +16,6 @@ import it.uniroma3.icr.model.Image;
 import it.uniroma3.icr.model.Job;
 import it.uniroma3.icr.model.Result;
 import it.uniroma3.icr.model.Student;
-import it.uniroma3.icr.model.StudentSocial;
 import it.uniroma3.icr.model.Task;
 
 @Service
@@ -59,72 +57,20 @@ public class TaskFacade {
 	@SuppressWarnings("unchecked")
 	public Task assignTask(Student s) {
 		Task task = null;
+		String sr1 = "SELECT t FROM Task t WHERE t.batch >= (SELECT max(t2.batch) FROM Task t2 WHERE t2.job.id=(SELECT DISTINCT job.id FROM Task) AND t2.student.id IS NOT NULL) and ((t.student.id='"
+				+ s.getId() + "' AND t.endDate IS NULL) OR (t.student.id IS NULL)) ORDER BY t.student.id";
+		Query query1 = this.entityManager.createQuery(sr1).setMaxResults(1);
+		List<Task> taskList = query1.getResultList(); // trova il task da eseguire
 
-		String sr2 = "SELECT t FROM Task t WHERE t.student.id='" + s.getId() + "'" + "AND t.endDate IS NOT NULL";
-		Query query2 = this.entityManager.createQuery(sr2);
-		List<Task> tasksByStudent = query2.getResultList(); // trova i task completati dallo studente
-
-		String sr3 = "SELECT t FROM Task t WHERE t.student.id='" + s.getId() + "'" + "AND t.endDate IS NULL";
-		Query query3 = this.entityManager.createQuery(sr3);
-		List<Task> taskList = query3.getResultList(); // trova i task senza data finale dello studente
-
-		String sr4 = "SELECT t FROM Task t WHERE t.student.id IS NULL AND t.studentsocial.id IS NULL";
-		Query query4 = this.entityManager.createQuery(sr4);
-		List<Task> taskList2 = query4.getResultList(); // trova i task senza studente
-
-		taskList.addAll(taskList2); // task senza studente+ task senza data finale
-
-		String sr = "SELECT job_id FROM task WHERE student_id='" + s.getId() + "'" + "AND end_date IS NOT NULL";
-		Query query = this.entityManager.createNativeQuery(sr);
-		List<BigInteger> jobsIdCompletati = query.getResultList(); // job effettuati dallo studente
-
-		for (int i = 0; i < taskList.size(); i++) {
-			Long jobId = taskList.get(i).getJob().getId();
-			int cont = 0;
-			boolean ver = false;
-
-			String sr5 = "SELECT t.studentsocial.id FROM Task t WHERE t.job.id='" + jobId + "'"
-					+ "AND t.studentsocial IS NOT NULL";
-			Query query5 = this.entityManager.createQuery(sr5);
-			List<Long> utentiConQuelJob = query5.getResultList();
-			String sr7 = "SELECT t.student.id FROM Task t WHERE t.job.id='" + jobId + "'" + "AND t.student IS NOT NULL";
-			Query query7 = this.entityManager.createQuery(sr7);
-			List<Long> utentiConQuelJob2 = query7.getResultList();
-
-			utentiConQuelJob.addAll(utentiConQuelJob2);
-
-			for (int z = 0; z < jobsIdCompletati.size(); z++)
-				if (jobId == jobsIdCompletati.get(z).longValue()) {
-					cont++;
-					Integer batch = taskList.get(i).getBatch();
-
-					if (utentiConQuelJob.contains(s.getId())) {
-						String sr6 = "SELECT t.batch FROM Task t WHERE t.job.id='" + jobId + "'" + "AND t.student='"
-								+ s.getId() + "'" + "AND end_date IS NOT NULL";
-						Query query6 = this.entityManager.createQuery(sr6);
-						List<Integer> batchesUtenteConQuelJob = query6.getResultList();
-						boolean o = batchesUtenteConQuelJob.contains(batch);
-						if (o == false)
-							ver = true;
-					}
-
-				}
-			if (cont == 0 || ver) {
-
-				if (false == tasksByStudent.contains(taskList.get(i))) {
-					task = taskList.get(i);
-					task.setStudent(s);
-					if (task.getStartDate() == null) {
-						Calendar calendar = Calendar.getInstance();
-						java.util.Date now = calendar.getTime();
-						java.sql.Timestamp date = new java.sql.Timestamp(now.getTime());
-						task.setStartDate(date);
-					}
-					break;
-				}
-			}
-
+		task = taskList.get(0);
+		task.setStudent(s);
+		if (task.getStartDate() == null) {
+			Calendar calendar = Calendar.getInstance();
+			java.util.Date now = calendar.getTime();
+			java.sql.Timestamp date = new java.sql.Timestamp(now.getTime());
+			task.setStartDate(date);
 		}
+
 		if (task != null) {
 			s.addTask(task);
 			this.taskDao.save(task);
@@ -132,84 +78,70 @@ public class TaskFacade {
 		return task;
 	}
 
-	@SuppressWarnings("unchecked")
-	public Task assignTask2(StudentSocial s) {
-		Task task = null;
-
-		String sr2 = "SELECT t FROM Task t WHERE t.studentsocial.id='" + s.getId() + "'" + "AND t.endDate IS NOT NULL";
-		Query query2 = this.entityManager.createQuery(sr2);
-		List<Task> tasksByStudent = query2.getResultList(); // trova i task completati dallo studente
-
-		String sr3 = "SELECT t FROM Task t WHERE t.studentsocial.id='" + s.getId() + "'" + "AND t.endDate IS NULL";
-		Query query3 = this.entityManager.createQuery(sr3);
-		List<Task> taskList = query3.getResultList(); // trova i task senza data finale dello studente
-
-		String sr4 = "SELECT t FROM Task t WHERE t.studentsocial.id IS NULL AND t.student.id IS NULL";
-		Query query4 = this.entityManager.createQuery(sr4);
-		List<Task> taskList2 = query4.getResultList(); // trova i task senza studente
-
-		taskList.addAll(taskList2); // task senza studente+ task senza data finale
-
-		String sr = "SELECT distinct job_id FROM task WHERE studentsocial_id='" + s.getId() + "'"
-				+ "AND end_date IS NOT NULL";
-		Query query = this.entityManager.createNativeQuery(sr);
-		List<BigInteger> jobsIdCompletati = query.getResultList(); // job effettuati dallo studente
-
-		for (int i = 0; i < taskList.size(); i++) {
-
-			Long jobId = taskList.get(i).getJob().getId();
-			int cont = 0;
-			boolean ver = false;
-
-			for (int z = 0; z < jobsIdCompletati.size(); z++)
-				if (jobId == jobsIdCompletati.get(z).longValue()) {
-					cont++;
-					Integer batch = taskList.get(i).getBatch();
-
-					String sr5 = "SELECT t.studentsocial.id FROM Task t WHERE t.job.id='" + jobId + "'"
-							+ "AND t.studentsocial IS NOT NULL";
-					Query query5 = this.entityManager.createQuery(sr5);
-					List<Long> utentiConQuelJob = query5.getResultList();
-					String sr7 = "SELECT t.student.id FROM Task t WHERE t.job.id='" + jobId + "'"
-							+ "AND t.student IS NOT NULL";
-					Query query7 = this.entityManager.createQuery(sr7);
-					List<Long> utentiConQuelJob2 = query7.getResultList();
-
-					utentiConQuelJob.addAll(utentiConQuelJob2);
-
-					if (utentiConQuelJob.contains(s.getId())) {
-						String sr6 = "SELECT t.batch FROM Task t WHERE t.job.id='" + jobId + "'"
-								+ "AND t.studentsocial='" + s.getId() + "'" + "AND end_date IS NOT NULL";
-						Query query6 = this.entityManager.createQuery(sr6);
-						List<Integer> batchesUtenteConQuelJob = query6.getResultList();
-						boolean o = batchesUtenteConQuelJob.contains(batch);
-						if (o == false)
-							ver = true;
-					}
-
-				}
-			if (cont == 0 || ver) {
-
-				if (false == tasksByStudent.contains(taskList.get(i))) {
-					task = taskList.get(i);
-					task.setStudentsocial(s);
-					if (task.getStartDate() == null) {
-						Calendar calendar = Calendar.getInstance();
-						java.util.Date now = calendar.getTime();
-						java.sql.Timestamp date = new java.sql.Timestamp(now.getTime());
-						task.setStartDate(date);
-					}
-					break;
-				}
-			}
-
-		}
-		if (task != null) {
-			s.addTask(task);
-			this.taskDao.save(task);
-		}
-		return task;
-	}
+	/*
+	 * @SuppressWarnings("unchecked") public Task assignTask2(StudentSocial s) {
+	 * Task task = null;
+	 * 
+	 * String sr2 = "SELECT t FROM Task t WHERE t.studentsocial.id='" + s.getId() +
+	 * "'" + "AND t.endDate IS NOT NULL"; Query query2 =
+	 * this.entityManager.createQuery(sr2); List<Task> tasksByStudent =
+	 * query2.getResultList(); // trova i task completati dallo studente
+	 * 
+	 * String sr3 = "SELECT t FROM Task t WHERE t.studentsocial.id='" + s.getId() +
+	 * "'" + "AND t.endDate IS NULL"; Query query3 =
+	 * this.entityManager.createQuery(sr3); List<Task> taskList =
+	 * query3.getResultList(); // trova i task senza data finale dello studente
+	 * 
+	 * String sr4 =
+	 * "SELECT t FROM Task t WHERE t.studentsocial.id IS NULL AND t.student.id IS NULL"
+	 * ; Query query4 = this.entityManager.createQuery(sr4); List<Task> taskList2 =
+	 * query4.getResultList(); // trova i task senza studente
+	 * 
+	 * taskList.addAll(taskList2); // task senza studente+ task senza data finale
+	 * 
+	 * String sr = "SELECT distinct job_id FROM task WHERE studentsocial_id='" +
+	 * s.getId() + "'" + "AND end_date IS NOT NULL"; Query query =
+	 * this.entityManager.createNativeQuery(sr); List<BigInteger> jobsIdCompletati =
+	 * query.getResultList(); // job effettuati dallo studente
+	 * 
+	 * for (int i = 0; i < taskList.size(); i++) {
+	 * 
+	 * Long jobId = taskList.get(i).getJob().getId(); int cont = 0; boolean ver =
+	 * false;
+	 * 
+	 * for (int z = 0; z < jobsIdCompletati.size(); z++) if (jobId ==
+	 * jobsIdCompletati.get(z).longValue()) { cont++; Integer batch =
+	 * taskList.get(i).getBatch();
+	 * 
+	 * String sr5 = "SELECT t.studentsocial.id FROM Task t WHERE t.job.id='" + jobId
+	 * + "'" + "AND t.studentsocial IS NOT NULL"; Query query5 =
+	 * this.entityManager.createQuery(sr5); List<Long> utentiConQuelJob =
+	 * query5.getResultList(); String sr7 =
+	 * "SELECT t.student.id FROM Task t WHERE t.job.id='" + jobId + "'" +
+	 * "AND t.student IS NOT NULL"; Query query7 =
+	 * this.entityManager.createQuery(sr7); List<Long> utentiConQuelJob2 =
+	 * query7.getResultList();
+	 * 
+	 * utentiConQuelJob.addAll(utentiConQuelJob2);
+	 * 
+	 * if (utentiConQuelJob.contains(s.getId())) { String sr6 =
+	 * "SELECT t.batch FROM Task t WHERE t.job.id='" + jobId + "'" +
+	 * "AND t.studentsocial='" + s.getId() + "'" + "AND end_date IS NOT NULL"; Query
+	 * query6 = this.entityManager.createQuery(sr6); List<Integer>
+	 * batchesUtenteConQuelJob = query6.getResultList(); boolean o =
+	 * batchesUtenteConQuelJob.contains(batch); if (o == false) ver = true; }
+	 * 
+	 * } if (cont == 0 || ver) {
+	 * 
+	 * if (false == tasksByStudent.contains(taskList.get(i))) { task =
+	 * taskList.get(i); task.setStudentsocial(s); if (task.getStartDate() == null) {
+	 * Calendar calendar = Calendar.getInstance(); java.util.Date now =
+	 * calendar.getTime(); java.sql.Timestamp date = new
+	 * java.sql.Timestamp(now.getTime()); task.setStartDate(date); } break; } }
+	 * 
+	 * } if (task != null) { s.addTask(task); this.taskDao.save(task); } return
+	 * task; }
+	 */
 
 	public void updateEndDate(Task t) {
 		taskDao.updateEndDate(t);
@@ -256,7 +188,6 @@ public class TaskFacade {
 			for (int r = 0; r < number; r++) {
 
 				if ((r % job.getTaskSize()) == 0) {
-
 					task = new Task();
 					task.setBatch(batchNumber);
 					task.setJob(job);
@@ -264,14 +195,14 @@ public class TaskFacade {
 					this.addTask(task);
 					batchNumber++;
 				}
-
-					Image j = job.getImages().get(r);
-					Result result = new Result();
-					result.setImage(j);
-					result.setTask(task);
-					this.resultFacade.addResult(result);
+				Image j = job.getImages().get(r);
+				Result result = new Result();
+				result.setImage(j);
+				result.setTask(task);
+				this.resultFacade.addResult(result);
 			}
 		}
+
 	}
 
 }
