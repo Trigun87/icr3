@@ -57,8 +57,8 @@ public class TaskFacade {
 	@SuppressWarnings("unchecked")
 	public Task assignTask(Student s) {
 		Task task = null;
-		String sr1 = "SELECT t FROM Task t WHERE t.batch >= (SELECT max(t2.batch) FROM Task t2 WHERE t2.job.id=(SELECT DISTINCT job.id FROM Task) AND t2.student.id IS NOT NULL) and ((t.student.id='"
-				+ s.getId() + "' AND t.endDate IS NULL) OR (t.student.id IS NULL)) ORDER BY t.student.id";
+		String sr1 = "SELECT t FROM Task t WHERE t.batch not in (SELECT distinct batch FROM Task t2 WHERE t2.job.id=(SELECT DISTINCT job.id FROM Task) AND t2.student.id= '"+ s.getId() + "' and t2.endDate IS NOT NULL) and ((t.student.id='" + s.getId()
+				+ "' AND t.endDate IS NULL) OR (t.student.id IS NULL)) ORDER BY t.student.id,batch";
 		Query query1 = this.entityManager.createQuery(sr1).setMaxResults(1);
 		List<Task> taskList = query1.getResultList(); // trova il task da eseguire
 
