@@ -25,7 +25,11 @@
 <!-- Favicon -->
 <link rel="shortcut icon"
 	href="<c:url value="${pageContext.request.contextPath}/img/siteImages/favicon.ico"/>">
-
+<style>
+.selectchar {
+    display: none;
+}
+</style>
 </head>
 
 <body class="landing">
@@ -40,7 +44,9 @@
 	</ul>
 
 	<div align="center">
-		<h3>Seleziona le parti della lettera che ti sembrano simili agli
+		<h3 class="selectword">Seleziona le parti della lettera che ti
+			sembrano simili agli esempi sottostanti</h3>
+		<h3 class="selectchar">Conferma se la lettera è simile agli
 			esempi sottostanti</h3>
 
 		<table class="pos">
@@ -56,21 +62,6 @@
 
 	</div>
 
-	<div align="center">
-		<h3>Attenzione: non vanno bene immagini come queste</h3>
-		<table class="neg">
-			<tr>
-				<c:forEach varStatus="vs" var="sample" items="${negativeSamples}">
-
-					<td><img
-						src="${pageContext.request.contextPath}/${sample.path}"
-						alt="${sample.id}" /></td>
-
-				</c:forEach>
-			</tr>
-		</table>
-	</div>
-
 
 	<form:form method="post" action="secondConsoleWord"
 		modelAttribute="taskResults" name="form">
@@ -80,12 +71,13 @@
 			<table class="${task.job.difficulty}">
 				<c:forEach varStatus="vs" var="result"
 					items="${taskResults.resultList}">
-					<div id="canvasWrapper"></div>
-					<button type=button id="undotoStart">RESTART</button>
-					<button type=button id="undo">UNDO</button>
+					<div id="canvasWrapper" style="height: 200px"></div>
+					<button type=button id="undotoStart" class="selectword">RESTART</button>
+					<button type=button id="undo" class="selectword">UNDO</button>
+					<button type=button id="buttonSI" class="selectchar">SI</button>
+					<button type=button id="buttonNO" class="selectchar">NO</button>
 					<form:input type="hidden" id="output"
 						path="resultList[${vs.index}].answer" />
-					</div>
 					<br>
 					<form:hidden path="resultList[${vs.index}].id" />
 					<form:hidden path="resultList[${vs.index}].image.id" />
@@ -101,7 +93,7 @@
 			</table>
 		</div>
 
-		<div align="center">
+		<div align="center" class="selectword">
 			<input type="submit" name="action"
 				value="Conferma e vai al prossimo task">
 		</div>
@@ -109,8 +101,18 @@
 		<br />
 
 		<div align="center">
-			<input type="submit" name="action"
-				value="Conferma e torna alla pagina dello studente">
+			<h3>Attenzione: non vanno bene immagini come queste</h3>
+			<table class="neg">
+				<tr>
+					<c:forEach varStatus="vs" var="sample" items="${negativeSamples}">
+
+						<td><img
+							src="${pageContext.request.contextPath}/${sample.path}"
+							alt="${sample.id}" /></td>
+
+					</c:forEach>
+				</tr>
+			</table>
 		</div>
 
 	</form:form>
@@ -121,6 +123,8 @@
 		</form:form>
 
 	</div>
+	
+	<button type=button id="testbutton">test switch modalità SI/NO </button>
 
 
 	<!-- Scripts -->
@@ -290,6 +294,10 @@ document.addEventListener('DOMContentLoaded', function() {
         c.undoToStart();
         $("#output")[0].value = JSON.stringify(c.getOutput());
     });
+    $("#testbutton").click(function() {
+    	$(".selectchar,.selectword").toggle();
+    });
+    testbutton
 });
 
 
