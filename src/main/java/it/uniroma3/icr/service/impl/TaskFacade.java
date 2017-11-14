@@ -57,7 +57,7 @@ public class TaskFacade {
 	@SuppressWarnings("unchecked")
 	public Task assignTask(Student s) {
 		Task task = null;
-		String sr1 = "SELECT t FROM Task t WHERE t.batch not in (SELECT distinct batch FROM Task t2 WHERE t2.job.id=(SELECT DISTINCT job.id FROM Task) AND t2.student.id= ?1 and t2.endDate IS NOT NULL) and ((t.student.id= ?2 AND t.endDate IS NULL) OR (t.student.id IS NULL)) ORDER BY t.student.id";
+		String sr1 = "SELECT t FROM Task t WHERE t.batch not in (SELECT distinct batch FROM Task t2 WHERE t2.student.id= ?1 and t2.endDate IS NOT NULL) and ((t.student.id= ?2 AND t.endDate IS NULL) OR (t.student.id IS NULL)) ORDER BY t.student.id";
 		Query query1 = this.entityManager.createQuery(sr1).setMaxResults(1).setParameter(1, s.getId()).setParameter(2, s.getId());
 		List<Task> taskList = query1.getResultList(); // trova il task da eseguire
 
@@ -75,6 +75,18 @@ public class TaskFacade {
 			this.taskDao.save(task);
 		}
 		return task;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public String findHintByTask(Task t) {
+		String sr1 = "select answer, count(*) c from result where task_id in (select id from task where batch = ?1 and job_id = ?2) and answer is not null group by answer HAVING count(*) >= ?3 order by c";
+		Query query1 = this.entityManager.createNativeQuery(sr1).setMaxResults(1).setParameter(1, t.getBatch()).setParameter(2, t.getJob().getId());
+		if (t.getJob().isTutorial()) query1.setParameter(3, 1);
+		else query1.setParameter(3, 3);
+		List<Object[]> temp = query1.getResultList();
+		String hint = "";
+		if (temp.size() > 0) hint = (String) temp.get(0)[0];
+		return hint;
 	}
 
 	/*

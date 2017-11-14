@@ -141,6 +141,8 @@ public class TaskController {
 			for (Result r : taskResults.getResultList()) {
 				r.getImage().setPath(r.getImage().getPath().replace(File.separatorChar, '/'));
 			}
+			String hint = taskFacade.findHintByTask(taskResults.getResultList().get(0).getTask());
+
 			model.addAttribute("student", student);
 
 			model.addAttribute("positiveSamples", positiveSamples);
@@ -148,6 +150,7 @@ public class TaskController {
 
 			model.addAttribute("task", task);
 			model.addAttribute("taskResults", taskResults);
+			model.addAttribute("hint", hint);
 			return url;
 		}
 
@@ -186,8 +189,8 @@ public class TaskController {
 
 	@RequestMapping(value = "user/secondConsoleWord", method = RequestMethod.POST)
 	public String taskRecapWord(@ModelAttribute("taskResults") TaskWrapper taskResults, Model model,
-			HttpServletRequest request, HttpServletResponse response, @RequestParam(name = "social", required = false) String social)
-			throws IOException {
+			HttpServletRequest request, HttpServletResponse response,
+			@RequestParam(name = "social", required = false) String social) throws IOException {
 
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		String s = auth.getName();
@@ -266,8 +269,8 @@ public class TaskController {
 
 	@RequestMapping(value = "user/secondConsole", method = RequestMethod.POST)
 	public String taskRecap(@ModelAttribute("taskResults") TaskWrapper taskResults, Model model,
-			HttpServletRequest request, HttpServletResponse response, @RequestParam(name = "social", required = false) String social)
-			throws IOException {
+			HttpServletRequest request, HttpServletResponse response,
+			@RequestParam(name = "social", required = false) String social) throws IOException {
 
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		String s = auth.getName();
@@ -330,12 +333,11 @@ public class TaskController {
 		if (social == null || social.isEmpty()) {
 			s = studentFacade.findUser(auth.getName());
 			studentTasks = taskFacade.findTaskByStudent(s.getId());
-		}
-		else {
+		} else {
 			s = studentFacadesocial.findUser(auth.getName());
 			studentTasks = taskFacade.findTaskByStudentSocial(s.getId());
 		}
-		
+
 		Collections.sort(studentTasks, new ComparatorePerData());
 		model.addAttribute("studentTasks", studentTasks);
 		model.addAttribute("s", s);

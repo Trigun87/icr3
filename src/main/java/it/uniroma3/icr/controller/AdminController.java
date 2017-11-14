@@ -164,7 +164,7 @@ public class AdminController {
 
 	@RequestMapping(value = "admin/addJobByManuscript")
 	public String confirmJobByManuscript(HttpSession session, HttpServletRequest request,
-			@Valid @ModelAttribute Job job, BindingResult bindingResult, @ModelAttribute Task task,
+			@Valid @ModelAttribute Job job, BindingResult bindingResult, @ModelAttribute Task task, 
 			@ModelAttribute Image image, @ModelAttribute Result result, Model model) {
 		Manuscript manuscript = manuscriptService
 				.findManuscriptByName(((Manuscript) session.getAttribute("manuscript")).getName());

@@ -26,6 +26,8 @@ public class Job {
 	private Integer numberOfWords;
 	@Column(nullable = false)
 	private Integer numberOfStudents;
+	@Column(columnDefinition="default 'false'")
+	private boolean tutorial;
 	private String difficulty;
 	@ManyToOne
 	private Manuscript manuscript;
@@ -99,6 +101,14 @@ public class Job {
 
 	public void setTitle(String title) {
 		this.title = title;
+	}
+
+	public boolean isTutorial() {
+		return tutorial;
+	}
+
+	public void setTutorial(boolean tutorial) {
+		this.tutorial = tutorial;
 	}
 
 	public Integer getTaskSize() {

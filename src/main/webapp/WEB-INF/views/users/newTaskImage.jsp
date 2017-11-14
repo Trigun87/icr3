@@ -26,8 +26,8 @@
 <link rel="shortcut icon"
 	href="<c:url value="${pageContext.request.contextPath}/img/siteImages/favicon.ico"/>">
 <style>
-.selectchar {
-    display: none;
+.selectchar, .wrongAnswer {
+	display: none;
 }
 </style>
 </head>
@@ -94,8 +94,15 @@
 		</div>
 
 		<div align="center" class="selectword">
-			<input type="submit" name="action"
+			<input type="submit" name="action" id="confermaForm"
 				value="Conferma e vai al prossimo task">
+		</div>
+
+		<div align="center" class="wrongAnswer">
+			<br>
+			<h3>Risposta sbagliata, vuoi vedere la soluzione?</h3>
+			<button type=button id="showHint">Mostra Soluzione</button>
+			<br> <br>
 		</div>
 
 		<br />
@@ -123,19 +130,24 @@
 		</form:form>
 
 	</div>
-	
-	<button type=button id="testbutton">test switch modalità SI/NO </button>
+
 
 
 	<!-- Scripts -->
 	<script>
 var ExtendedCanvas = (function() {
-    var context, data, dataOrigArr, dataOrig, canvas, output;
-    function ExtendedCanvas(selector, imageSrc) {
+    var context, data, dataOrigArr, dataOrig, canvas, output, hint, tutorial;
+    function ExtendedCanvas(selector, imageSrc, hint2, tutorial2) {
         var wrapper = document.querySelector(selector);
         this.element = canvas = document.createElement('canvas');
         context = this.element.getContext('2d');
-        loadImage.call(this, imageSrc, function(image) {
+		if (hint2 == "") {
+			//tutorial2 = false;
+			hint2 = "[]";
+		}
+        this.hint = JSON.parse(hint2);
+        this.tutorial = tutorial2;
+        loadImage.call(this, imageSrc, this, function(image) {
             canvas.setAttribute('width', image.width*3);
             canvas.setAttribute('height', image.height*3);
             context.webkitImageSmoothingEnabled = false;
@@ -144,17 +156,34 @@ var ExtendedCanvas = (function() {
             context.drawImage(image,0,0,image.width*3, image.height*3);
             data = context.getImageData(0,0,canvas.width, canvas.height);
             dataOrigArr = context.getImageData(0,0,canvas.width, canvas.height).data;
-            dataOrig = canvas.toDataURL();
+            dataOrig = canvas.toDataURL();           		
         });
         wrapper.appendChild(this.element);
-        output = [];
+        this.output = [];
     }
 
-    function loadImage(src, cb) {
+    function loadImage(src, canvas2, cb) {
         var image = new Image();
         var canvas = this.element;
+        
         image.onload = function() {
             cb(this);
+            firstcolor = null;
+            checkcolor = true;
+            for (i=0;(i<data.width && checkcolor);i++)
+            	for (j=0;(j<data.height && checkcolor);j++) {
+            		testcolor = canvas2.getPixelColor(i, j).join();
+            		if (testcolor != [255,255,255,255].join())
+            			if (!firstcolor)
+            			firstcolor = testcolor;
+            			else if (firstcolor != testcolor)
+            				checkcolor = false;
+            	}
+            if (checkcolor) $(".selectchar,.selectword").toggle(); 
+            if (!canvas2.tutorial) {
+            	canvas2.setOutput(canvas2.hint);
+	            canvas2.fillImg("0,0,0,255".split(","));
+            }
         }
         image.crossOrigin = 'Anonymous';
         image.src = src;
@@ -162,6 +191,18 @@ var ExtendedCanvas = (function() {
 
     ExtendedCanvas.prototype.getPixelIndex = function(x, y) {
         return (Math.floor(y) * canvas.width + Math.floor(x)) * 4;
+    }
+    
+    ExtendedCanvas.prototype.selectSingleColor = function(x, y) {
+    	firstcolor = null;
+        checkcolor = true;
+        for (i=0;(i<data.width && checkcolor);i++)
+        	for (j=0;(j<data.height && checkcolor);j++) {
+        		testcolor = this.getPixelColor(i, j).join();
+        		if (testcolor != [255,255,255,255].join())
+        			checkcolor = false;
+        			this.fill(i,j);
+        	}
     }
 
     ExtendedCanvas.prototype.getPixelColor = function(x, y) {
@@ -191,7 +232,11 @@ var ExtendedCanvas = (function() {
         d[index + 2] = color[2];
         d[index + 3] = color[3];
     }
-
+    
+    ExtendedCanvas.prototype.setOutput = function(out) {
+        this.output = out;
+    }
+    
 
     ExtendedCanvas.prototype.fill = function(x, y, fillColor) {
         if(x < 0 || y < 0 || x > canvas.width || y > canvas.height) {
@@ -208,11 +253,9 @@ var ExtendedCanvas = (function() {
         if(color === fillColor.join()) {
             return;
         }
-        output.push(color);
+        this.output.push(color);
         temp = [];
         this.fillImg(fillColor);
-
-
     }
 
     ExtendedCanvas.prototype.fillImg = function(fillColor) {
@@ -227,8 +270,8 @@ var ExtendedCanvas = (function() {
             var posX = position[0];
             var posY = position[1];
             var posColor = this.getPixelColor(posX, posY).join();
-            for (k in output)
-                if(posColor === output[k]) {
+            for (k in this.output)
+                if(posColor === this.output[k]) {
                     this.setPixelColor(posX, posY, fillColor);
                 }
         }
@@ -237,12 +280,30 @@ var ExtendedCanvas = (function() {
 
 
     ExtendedCanvas.prototype.getOutput = function() {
-        return output;
+        return this.output;
     }
+    
+    ExtendedCanvas.prototype.checkAnswer = function() {
+    	if (!this.tutorial) return true;
+    	temp = this.output.sort();
+    	if (temp.length != this.hint.length) return false;
+    	for (i=0; i<temp.length; i++){
+    		if (!temp[i].equals(this.hint[i]))
+                return false;       
+    	}
+    	return true;   	
+    }
+    
+    ExtendedCanvas.prototype.showAnswer = function() {
+    	this.undoToStart();
+    	this.setOutput(this.hint);
+        this.fillImg("0,0,0,255".split(","));
+    }
+    
 
     ExtendedCanvas.prototype.undo = function() {
-        if (output.length>0){
-            fillColor = output.pop();
+        if (this.output.length>0){
+            fillColor = this.output.pop();
             var stack = [];
             context.fillStyle = fillColor.split(",");
 
@@ -266,7 +327,7 @@ var ExtendedCanvas = (function() {
     ExtendedCanvas.prototype.undoToStart = function() {
 
         var canvasPic = new Image();
-        output = [];
+        this.output = [];
         canvasPic.src = dataOrig;
         canvasPic.onload = function() {
             context.drawImage(canvasPic, 0, 0);
@@ -277,29 +338,39 @@ var ExtendedCanvas = (function() {
 })();
 
 document.addEventListener('DOMContentLoaded', function() {
-    var c = new ExtendedCanvas('#canvasWrapper', '${pageContext.request.contextPath}/${taskResults.resultList[0].image.path}');
-
+    var c = new ExtendedCanvas('#canvasWrapper', '${pageContext.request.contextPath}/${taskResults.resultList[0].image.path}', '${hint}', ${taskResults.resultList[0].task.job.tutorial});
     c.element.addEventListener('click', function(e) {
         var x = e.pageX - this.offsetLeft;
         var y = e.pageY - this.offsetTop;
         c.fill(x, y);
-        $("#output")[0].value = JSON.stringify(c.getOutput());
     });
 
     $("#undo").click(function() {
         c.undo();
-        $("#output")[0].value = JSON.stringify(c.getOutput());
     });
     $("#undotoStart").click(function() {
         c.undoToStart();
-        $("#output")[0].value = JSON.stringify(c.getOutput());
     });
     $("#testbutton").click(function() {
     	$(".selectchar,.selectword").toggle();
     });
-    testbutton
+    $("#confermaForm").click(function() {
+    	$("#output")[0].value = JSON.stringify(c.getOutput().sort());
+    	if (!c.checkAnswer()) $(".wrongAnswer").show();   	
+    	return c.checkAnswer();
+    });
+    $("#buttonSI").click(function() {
+    	c.selectSingleColor();
+    	$("#confermaForm").click();
+    });
+    $("#buttonNO").click(function() {
+    	$("#confermaForm").click();
+    });
+    $("#showHint").click(function() {
+    	c.showAnswer();
+    });
+    
 });
-
 
   </script>
 	<script src="js/selectAll.js"></script>

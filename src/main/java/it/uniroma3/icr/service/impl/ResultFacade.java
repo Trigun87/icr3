@@ -41,4 +41,5 @@ public class ResultFacade {
 		resultDao.addImageAdnTaskToResult(t, r, j);
 	}
 	
+	
 }
