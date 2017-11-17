@@ -142,7 +142,7 @@ var ExtendedCanvas = (function() {
         this.element = canvas = document.createElement('canvas');
         context = this.element.getContext('2d');
 		if (hint2 == "") {
-			//tutorial2 = false;
+			tutorial2 = false;
 			hint2 = "[]";
 		}
         this.hint = JSON.parse(hint2);
@@ -151,7 +151,7 @@ var ExtendedCanvas = (function() {
             canvas.setAttribute('width', image.width*3);
             canvas.setAttribute('height', image.height*3);
             context.webkitImageSmoothingEnabled = false;
-            context.mozImageSmoothingEnabled = false;
+            context.mozImageSmoothingEnabled = false; 
             context.imageSmoothingEnabled = false; /// future
             context.drawImage(image,0,0,image.width*3, image.height*3);
             data = context.getImageData(0,0,canvas.width, canvas.height);

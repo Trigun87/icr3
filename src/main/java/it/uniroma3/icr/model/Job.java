@@ -26,7 +26,7 @@ public class Job {
 	private Integer numberOfWords;
 	@Column(nullable = false)
 	private Integer numberOfStudents;
-	@Column(columnDefinition="default 'false'")
+	@Column(columnDefinition="boolean default 'false'")
 	private boolean tutorial;
 	private String difficulty;
 	@ManyToOne
