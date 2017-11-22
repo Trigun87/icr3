@@ -136,7 +136,7 @@
 	<!-- Scripts -->
 	<script>
 var ExtendedCanvas = (function() {
-    var context, data, dataOrigArr, dataOrig, canvas, output, hint, tutorial;
+    var context, data, dataOrigArr, dataOrig, canvas, output, hint, tutorial, tempOutput;
     function ExtendedCanvas(selector, imageSrc, hint2, tutorial2) {
         var wrapper = document.querySelector(selector);
         this.element = canvas = document.createElement('canvas');
@@ -234,7 +234,7 @@ var ExtendedCanvas = (function() {
     }
     
     ExtendedCanvas.prototype.setOutput = function(out) {
-        this.output = out;
+        this.output = out.slice();
     }
     
 
@@ -295,9 +295,32 @@ var ExtendedCanvas = (function() {
     }
     
     ExtendedCanvas.prototype.showAnswer = function() {
-    	this.undoToStart();
-    	this.setOutput(this.hint);
-        this.fillImg("0,0,0,255".split(","));
+    	this.tempOutput = this.output;
+    	tempthis = this;
+        var canvasPic = new Image();
+        this.output = [];
+        canvasPic.src = dataOrig;
+        canvasPic.onload = function() {
+            context.drawImage(canvasPic, 0, 0);
+            data = context.getImageData(0,0,canvas.width, canvas.height);
+            tempthis.setOutput(tempthis.hint);
+            tempthis.fillImg("0,0,0,255".split(","));
+            
+        };
+    }
+    
+    ExtendedCanvas.prototype.hideAnswer = function() {
+        var canvasPic = new Image();
+        tempthis = this;
+        console.log(this.output);
+        this.setOutput(this.tempOutput);
+        canvasPic.src = dataOrig;
+        canvasPic.onload = function() {
+            context.drawImage(canvasPic, 0, 0);
+            data = context.getImageData(0,0,canvas.width, canvas.height);
+            tempthis.fillImg("0,0,0,255".split(","));
+            console.log(tempthis.output);
+        };
     }
     
 
@@ -366,8 +389,11 @@ document.addEventListener('DOMContentLoaded', function() {
     $("#buttonNO").click(function() {
     	$("#confermaForm").click();
     });
-    $("#showHint").click(function() {
+    $("#showHint").mousedown(function() {
     	c.showAnswer();
+    });
+    $("#showHint").mouseup(function() {
+    	c.hideAnswer();
     });
     
 });
