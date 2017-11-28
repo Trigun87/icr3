@@ -17,8 +17,8 @@
 <title>ICR</title>
 
 <!--[if lte IE 8]><script src="/js/ie/html5shiv.js"></script><![endif]-->
-<!-- <link rel="stylesheet"
-	href="${pageContext.request.contextPath}/css/registration.css" />
+ <link rel="stylesheet"
+	href="${pageContext.request.contextPath}/css/registration.css?1" />
 <!--[if lte IE 8]><link rel="stylesheet" href="/css/ie8.css" /><![endif]-->
 <!--[if lte IE 9]><link rel="stylesheet" href="/css/ie9.css" /><![endif]-->
 
@@ -72,7 +72,11 @@
 
 						<div class="field-wrap">
 							<label> E' un tutorial? </label>
-							
+							<form:select path="tutorial">
+								<option value="false">NO</option>
+								<option value="true">SI</option>
+							</form:select>
+										
 						<form:checkbox path='tutorial' />
 						</div>
 

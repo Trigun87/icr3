@@ -39,6 +39,13 @@ public class Student {
 
 	@Column(nullable=false)
 	private String role;
+	
+	@Column(nullable=false)
+	private int tempoEffettuato = 0;
+
+	@Column(nullable=false)
+	private int taskEffettuati = 0;
+
 
 	@OneToMany(mappedBy="student")
 	private List<Task> tasks;
@@ -61,6 +68,22 @@ public class Student {
 
 	public void setRole(String role) {
 		this.role = role;
+	}
+
+	public int getTempoEffettuato() {
+		return tempoEffettuato;
+	}
+
+	public void setTempoEffettuato(int tempoEffettuato) {
+		this.tempoEffettuato = tempoEffettuato;
+	}
+
+	public int getTaskEffettuati() {
+		return taskEffettuati;
+	}
+
+	public void setTaskEffettuati(int taskEffettuati) {
+		this.taskEffettuati = taskEffettuati;
 	}
 
 	public String getName() {

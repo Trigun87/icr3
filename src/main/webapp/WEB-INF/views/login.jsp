@@ -16,7 +16,7 @@
 
 <!--[if lte IE 8]><script src="/js/ie/html5shiv.js"></script><![endif]-->
 <link rel="stylesheet"
-	href="${pageContext.request.contextPath}/css/registration.css" />
+	href="${pageContext.request.contextPath}/css/registration.css?v=3" />
 <link rel="stylesheet"
 	href="${pageContext.request.contextPath}/css/facebookGoogleButtons.css" />
 

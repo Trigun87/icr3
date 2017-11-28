@@ -65,6 +65,9 @@ public class TaskController {
 	@Autowired
 	ResultFacade resultFacade;
 
+	@Autowired
+	private StudentFacade userFacade;
+	
 	@InitBinder
 	public void initBinder(WebDataBinder binder) {
 		binder.registerCustomEditor(Image.class, this.imageEditor);
@@ -200,7 +203,7 @@ public class TaskController {
 			student = studentFacade.findUser(s);
 		else
 			student = studentFacadesocial.findUser(s);
-		model.addAttribute("student", student);
+		
 
 		String action = request.getParameter("action");
 		String targetUrl = "";
@@ -209,13 +212,21 @@ public class TaskController {
 		String conferma2 = "Conferma e torna alla pagina dello studente";
 
 		if (conferma1.equals(action)) {
+			int tempTime = 0;
+			int tempTask = 0;
 			for (Result result : taskResults.getResultList()) {
 				Task task = result.getTask();
 				taskFacade.updateEndDate(task);
 				if (result.getAnswer() == null)
 					result.setAnswer("No");
+				tempTime = (int)(task.getEndDate().getTime() - task.getStartDate().getTime())/1000;
+				if (tempTime > 300) tempTime = 300;
+				tempTask++;
 			}
 			resultFacade.updateListResult(taskResults);
+			student.setTempoEffettuato(student.getTempoEffettuato() + tempTime);
+			student.setTaskEffettuati(student.getTaskEffettuati() + tempTask);
+			userFacade.retrieveUser(student);
 			response.sendRedirect("newTask");
 			targetUrl = "users/newTaskImage";
 		} else {
@@ -230,7 +241,7 @@ public class TaskController {
 			}
 			targetUrl = "users/homeStudent";
 		}
-
+		model.addAttribute("student", student);
 		return targetUrl;
 
 	}
@@ -329,17 +340,18 @@ public class TaskController {
 	public String studentTasks(Model model, @RequestParam(name = "social", required = false) String social) {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		Student s;
-		List<Task> studentTasks;
 		if (social == null || social.isEmpty()) {
 			s = studentFacade.findUser(auth.getName());
-			studentTasks = taskFacade.findTaskByStudent(s.getId());
+			//studentTasks = taskFacade.findTaskByStudent(s.getId());
 		} else {
 			s = studentFacadesocial.findUser(auth.getName());
-			studentTasks = taskFacade.findTaskByStudentSocial(s.getId());
+			//studentTasks = taskFacade.findTaskByStudentSocial(s.getId());
 		}
+		/*List<Task> studentTasks;
+		
 
 		Collections.sort(studentTasks, new ComparatorePerData());
-		model.addAttribute("studentTasks", studentTasks);
+		model.addAttribute("studentTasks", studentTasks);*/
 		model.addAttribute("s", s);
 		model.addAttribute("social", social);
 		return "users/studentTasks";

@@ -18,7 +18,8 @@
 <title>ICR</title>
 
 <!--[if lte IE 8]><script src="/js/ie/html5shiv.js"></script><![endif]-->
-<link rel="stylesheet" href="${pageContext.request.contextPath}/css/main.css" />
+<link rel="stylesheet"
+	href="${pageContext.request.contextPath}/css/main.css" />
 <!--[if lte IE 8]><lfnink rel="stylesheet" href="/css/ie8.css" /><![endif]-->
 <!--[if lte IE 9]><link rel="stylesheet" href="/css/ie9.css" /><![endif]-->
 
@@ -42,34 +43,28 @@
 		</tr>
 
 		<tr>
-			<th><c:out value="${fn:length(studentTasks) }"></c:out></th>
+			<th><c:out value="${s.taskEffettuati}"></c:out></th>
+		</tr>
+		<tr>
+			<th>Tempo Impiegato</th>
+		</tr>
+
+		<tr>
+			<th><c:out value="${((s.tempoEffettuato - s.tempoEffettuato%3600)/3600).intValue()}:${((s.tempoEffettuato%3600 - s.tempoEffettuato%3600%60)/60).intValue()}:${s.tempoEffettuato%3600%60}"></c:out></th>
 		</tr>
 	</table>
 
 	<table>
-		<tr>
-			<th>ID</th>
-			<th>Iniziato il:</th>
-			<th>Terminato il:</th>
-		</tr>
 
-		<c:forEach var="task" items="${studentTasks}">
-			<tr>
-				<th><c:out value="${task.id}"></c:out></th>
-				<th><c:out value="${task.startDate}"></c:out></th>
-				<th><c:out value="${task.endDate}"></c:out></th>
-			</tr>
-		</c:forEach>
-	</table>
-
-	<!-- Scripts -->
-	<script src="${pageContext.request.contextPath}/js/jquery.min.js"></script>
-	<script src="${pageContext.request.contextPath}/js/jquery.scrollex.min.js"></script>
-	<script src="${pageContext.request.contextPath}/js/jquery.scrolly.min.js"></script>
-	<script src="${pageContext.request.contextPath}/js/skel.min.js"></script>
-	<script src="${pageContext.request.contextPath}/js/util.js"></script>
-	<!--[if lte IE 8]><script src="/js/ie/respond.min.js"></script><![endif]-->
-	<script src="${pageContext.request.contextPath}/js/main.js"></script>
-
+		<!-- Scripts -->
+		<script src="${pageContext.request.contextPath}/js/jquery.min.js"></script>
+		<script
+			src="${pageContext.request.contextPath}/js/jquery.scrollex.min.js"></script>
+		<script
+			src="${pageContext.request.contextPath}/js/jquery.scrolly.min.js"></script>
+		<script src="${pageContext.request.contextPath}/js/skel.min.js"></script>
+		<script src="${pageContext.request.contextPath}/js/util.js"></script>
+		<!--[if lte IE 8]><script src="/js/ie/respond.min.js"></script><![endif]-->
+		<script src="${pageContext.request.contextPath}/js/main.js"></script>
 </body>
 </html>

@@ -35,7 +35,7 @@
 <body class="landing">
 	<ul>
 		<li>
-			<h2>${student.name}${student.surname}</h2>
+			<h2>${student.name} ${student.surname}</h2>
 
 			<h2>Stai svolgendo il task relativo al ${task.job.title}
 				${task.job.symbol.transcription}</h2>
@@ -74,6 +74,7 @@
 					<div id="canvasWrapper" style="height: 200px"></div>
 					<button type=button id="undotoStart" class="selectword">RESTART</button>
 					<button type=button id="undo" class="selectword">UNDO</button>
+					<div  class="selectchar"><br><br><br></div>
 					<button type=button id="buttonSI" class="selectchar">SI</button>
 					<button type=button id="buttonNO" class="selectchar">NO</button>
 					<form:input type="hidden" id="output"
