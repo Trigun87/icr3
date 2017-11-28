@@ -102,7 +102,7 @@
 		<div align="center" class="wrongAnswer">
 			<br>
 			<h3>Risposta sbagliata, vuoi vedere la soluzione?</h3>
-			<button type=button id="showHint">Mostra Soluzione</button>
+			<button type=button id="showHint">Tenere premuto per mostrare la soluzione</button>
 			<br> <br>
 		</div>
 
@@ -313,14 +313,12 @@ var ExtendedCanvas = (function() {
     ExtendedCanvas.prototype.hideAnswer = function() {
         var canvasPic = new Image();
         tempthis = this;
-        console.log(this.output);
         this.setOutput(this.tempOutput);
         canvasPic.src = dataOrig;
         canvasPic.onload = function() {
             context.drawImage(canvasPic, 0, 0);
             data = context.getImageData(0,0,canvas.width, canvas.height);
             tempthis.fillImg("0,0,0,255".split(","));
-            console.log(tempthis.output);
         };
     }
     
