@@ -54,7 +54,7 @@ public class TaskFacade {
 		return tasks;
 	}
 
-	@Transactional
+	@SuppressWarnings("unchecked")
 	public Task assignTask(Student s) {
 		Task task = null;
 		Calendar calendar = Calendar.getInstance();
@@ -64,21 +64,18 @@ public class TaskFacade {
 				+ "' else start_date end, student_id = ?1 where id = (SELECT id FROM Task t WHERE t.batch not in (SELECT distinct batch FROM Task t2 WHERE t2.student_id= ?2 and t2.end_Date IS NOT NULL) and ((t.student_id= ?3 AND t.end_Date IS NULL) OR (t.student_id IS NULL)) ORDER BY t.student_id LIMIT 1)";
 		Query query1 = this.entityManager.createNativeQuery(sr1).setParameter(1, s.getId()).setParameter(2, s.getId())
 				.setParameter(3, s.getId());
-		int updated = query1.executeUpdate();
-		if (updated == 1) {
-			sr1 = "SELECT t FROM Task t WHERE t.batch not in (SELECT distinct batch FROM Task t2 WHERE t2.student.id= ?1 and t2.endDate IS NOT NULL) and ((t.student.id= ?2 AND t.endDate IS NULL) OR (t.student.id IS NULL)) ORDER BY t.student.id";
-			query1 = this.entityManager.createQuery(sr1).setMaxResults(1).setParameter(1, s.getId()).setParameter(2,
-					s.getId());
+		if (query1.executeUpdate() == 1) {
+			sr1 = "SELECT t FROM Task t WHERE t.student.id = ?1 AND t.endDate IS NULL ORDER BY t.student.id";
+			query1 = this.entityManager.createQuery(sr1).setParameter(1, s.getId());
 
-			Task taskList = (Task) query1.getSingleResult(); // trova il task da eseguire
+			List<Task> taskList = query1.getResultList(); // trova il task da eseguire
 
-			if (taskList != null) {
-				task = taskList;
+			if (taskList.size() > 0) {
+				task = taskList.get(0);
 				task.setStudent(s);
 				s.addTask(task);
 			}
 		}
-
 		return task;
 	}
 
