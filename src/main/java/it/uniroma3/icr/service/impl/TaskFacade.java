@@ -54,29 +54,31 @@ public class TaskFacade {
 		return tasks;
 	}
 
-	@SuppressWarnings("unchecked")
+	@Transactional
 	public Task assignTask(Student s) {
 		Task task = null;
-		String sr1 = "SELECT t FROM Task t WHERE t.batch not in (SELECT distinct batch FROM Task t2 WHERE t2.student.id= ?1 and t2.endDate IS NOT NULL) and ((t.student.id= ?2 AND t.endDate IS NULL) OR (t.student.id IS NULL)) ORDER BY t.student.id";
-		Query query1 = this.entityManager.createQuery(sr1).setMaxResults(1).setParameter(1, s.getId()).setParameter(2,
-				s.getId());
-		List<Task> taskList = query1.getResultList(); // trova il task da eseguire
+		Calendar calendar = Calendar.getInstance();
+		java.util.Date now = calendar.getTime();
+		java.sql.Timestamp date = new java.sql.Timestamp(now.getTime());
+		String sr1 = "update task t3  set start_date = case when start_date is null then '" + date
+				+ "' else start_date end, student_id = ?1 where id = (SELECT id FROM Task t WHERE t.batch not in (SELECT distinct batch FROM Task t2 WHERE t2.student_id= ?2 and t2.end_Date IS NOT NULL) and ((t.student_id= ?3 AND t.end_Date IS NULL) OR (t.student_id IS NULL)) ORDER BY t.student_id LIMIT 1)";
+		Query query1 = this.entityManager.createNativeQuery(sr1).setParameter(1, s.getId()).setParameter(2, s.getId())
+				.setParameter(3, s.getId());
+		int updated = query1.executeUpdate();
+		if (updated == 1) {
+			sr1 = "SELECT t FROM Task t WHERE t.batch not in (SELECT distinct batch FROM Task t2 WHERE t2.student.id= ?1 and t2.endDate IS NOT NULL) and ((t.student.id= ?2 AND t.endDate IS NULL) OR (t.student.id IS NULL)) ORDER BY t.student.id";
+			query1 = this.entityManager.createQuery(sr1).setMaxResults(1).setParameter(1, s.getId()).setParameter(2,
+					s.getId());
 
-		if (taskList.size() > 0) {
-			task = taskList.get(0);
-			task.setStudent(s);
-			if (task.getStartDate() == null) {
-				Calendar calendar = Calendar.getInstance();
-				java.util.Date now = calendar.getTime();
-				java.sql.Timestamp date = new java.sql.Timestamp(now.getTime());
-				task.setStartDate(date);
-			}
+			Task taskList = (Task) query1.getSingleResult(); // trova il task da eseguire
 
-			if (task != null) {
+			if (taskList != null) {
+				task = taskList;
+				task.setStudent(s);
 				s.addTask(task);
-				this.taskDao.save(task);
 			}
 		}
+
 		return task;
 	}
 

@@ -180,7 +180,7 @@ var ExtendedCanvas = (function() {
             			else if (firstcolor != testcolor)
             				checkcolor = false;
             	}
-            if (checkcolor) $(".selectchar,.selectword").toggle(); 
+            if (checkcolor) {  $(".selectchar,.selectword").toggle(); } 
             if (!canvas2.tutorial) {
             	canvas2.setOutput(canvas2.hint);
 	            canvas2.fillImg("0,0,0,255".split(","));

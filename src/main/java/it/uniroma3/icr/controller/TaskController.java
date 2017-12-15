@@ -2,7 +2,6 @@ package it.uniroma3.icr.controller;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Collections;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -20,7 +19,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import it.uniroma3.icr.model.ComparatorePerData;
 import it.uniroma3.icr.model.Image;
 import it.uniroma3.icr.model.Job;
 import it.uniroma3.icr.model.Result;
@@ -144,7 +142,12 @@ public class TaskController {
 			for (Result r : taskResults.getResultList()) {
 				r.getImage().setPath(r.getImage().getPath().replace(File.separatorChar, '/'));
 			}
-			String hint = taskFacade.findHintByTask(taskResults.getResultList().get(0).getTask());
+			
+			String hint = "[]";
+			if (taskResults.getResultList().size()>0)
+				hint = taskFacade.findHintByTask(taskResults.getResultList().get(0).getTask());
+			else 
+				System.err.println("result vuoto - studente: " + student.getId());
 
 			model.addAttribute("student", student);
 
