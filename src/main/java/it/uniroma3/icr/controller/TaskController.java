@@ -146,6 +146,7 @@ public class TaskController {
 				LOGGER.info("2 - retrieved task " + r.getTask().getId() +" student " + r.getTask().getStudent().getId() + " (for " + student.getId() + ")");
 				r.getImage().setPath(r.getImage().getPath().replace(File.separatorChar, '/'));
 			}
+<<<<<<< HEAD
 
 			String hint = taskFacade.findHintByTask(taskResults.getResultList().get(0).getTask());
 					
@@ -154,6 +155,14 @@ public class TaskController {
 			for (Result r : taskResults.getResultList()) {
 				LOGGER.info("3.1 - hint on task "+ task.getId() + "(" + r.getTask().getId() +") to student " + student.getId() + "(" + r.getTask().getStudent().getId() +")" + " result "+r.getId());
 			}
+=======
+			
+			String hint = "[]";
+			if (taskResults.getResultList().size()>0)
+				hint = taskFacade.findHintByTask(taskResults.getResultList().get(0).getTask());
+			else 
+				System.err.println("result vuoto - studente: " + student.getId());
+>>>>>>> refs/remotes/origin/master
 
 			model.addAttribute("student", student);
 			model.addAttribute("positiveSamples", positiveSamples);
