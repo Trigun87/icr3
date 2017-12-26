@@ -61,7 +61,6 @@ public class TaskFacade {
 	@SuppressWarnings("unchecked")
 	public Task assignTask(Student student) {
 		Task task = null;
-<<<<<<< HEAD
 		String select = null;
 
 		select = "SELECT t "
@@ -69,20 +68,7 @@ public class TaskFacade {
 				+ "WHERE (t.student.id= ?1 AND t.endDate IS NULL AND t.startDate IS NOT NULL)"; // task assegnati allo studente ma lasciati in sospeso 
 		Query query1 = this.entityManager.createQuery(select).setParameter(1, student.getId());
 		List<Task> taskList = query1.getResultList(); // trova il task da eseguire
-=======
-		Calendar calendar = Calendar.getInstance();
-		java.util.Date now = calendar.getTime();
-		java.sql.Timestamp date = new java.sql.Timestamp(now.getTime());
-		String sr1 = "update task t3  set start_date = case when start_date is null then '" + date
-				+ "' else start_date end, student_id = ?1 where id = (SELECT id FROM Task t WHERE t.batch not in (SELECT distinct batch FROM Task t2 WHERE t2.student_id= ?2 and t2.end_Date IS NOT NULL) and ((t.student_id= ?3 AND t.end_Date IS NULL) OR (t.student_id IS NULL)) ORDER BY t.student_id LIMIT 1)";
-		Query query1 = this.entityManager.createNativeQuery(sr1).setParameter(1, s.getId()).setParameter(2, s.getId())
-				.setParameter(3, s.getId());
-		if (query1.executeUpdate() == 1) {
-			sr1 = "SELECT t FROM Task t WHERE t.student.id = ?1 AND t.endDate IS NULL ORDER BY t.student.id";
-			query1 = this.entityManager.createQuery(sr1).setParameter(1, s.getId());
->>>>>>> refs/remotes/origin/master
 
-<<<<<<< HEAD
 		if (taskList.size()!=0) {
 			task = taskList.get(0);
 			task.setStudent(student);
@@ -107,11 +93,7 @@ public class TaskFacade {
 				Calendar calendar = Calendar.getInstance();
 				java.util.Date now = calendar.getTime();
 				java.sql.Timestamp date = new java.sql.Timestamp(now.getTime());
-=======
-			List<Task> taskList = query1.getResultList(); // trova il task da eseguire
->>>>>>> refs/remotes/origin/master
 
-<<<<<<< HEAD
 				//	this.taskDao.save(task);
 				LOGGER.info("SQL UPDATE update task set start_date = "+ date + " student_id = " + student.getId() + " where id = " + taskList.get(position));
 
@@ -134,12 +116,6 @@ public class TaskFacade {
 			}
 			else { // i task sono finiti
 				return null;
-=======
-			if (taskList.size() > 0) {
-				task = taskList.get(0);
-				task.setStudent(s);
-				s.addTask(task);
->>>>>>> refs/remotes/origin/master
 			}
 		}
 		return task;
