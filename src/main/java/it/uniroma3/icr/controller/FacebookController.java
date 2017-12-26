@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -28,13 +30,15 @@ import it.uniroma3.icr.service.impl.StudentFacadeSocial;
 
 public class FacebookController {
 
-	private Facebook facebook;
+	private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
+
+//PAOLO	private Facebook facebook;
 	private ConnectionRepository connectionRepository;
 	@Autowired
 	private StudentFacadeSocial userFacadesocial;
 
 	public FacebookController(Facebook facebook, ConnectionRepository connectionRepository) {
-		this.facebook = facebook;
+//PAOLO		this.facebook = facebook;
 		this.connectionRepository = connectionRepository;
 
 	}
@@ -42,6 +46,9 @@ public class FacebookController {
 	@RequestMapping(value = "/facebookLogin", method = { RequestMethod.GET, RequestMethod.POST })
 	public String helloFacebook(@RequestParam(value = "daFB", required = false) String daFB, Model model,
 			@ModelAttribute("social") String social, RedirectAttributes redirectAttributes) {
+//PAOLO ADD NEXT LINE
+		Facebook facebook = connectionRepository.findPrimaryConnection(Facebook.class).getApi();
+		
 		if (daFB == null)
 			return "redirect:/login";
 
@@ -49,9 +56,11 @@ public class FacebookController {
 			return "redirect:/connect/facebook";
 		}
 
+		
 		String[] fields = { "name", "email" };
 		User user = facebook.fetchObject("me", User.class, fields);
 
+		
 		String email = user.getEmail();
 
 		StudentSocial student = userFacadesocial.findUser(email);
@@ -66,6 +75,7 @@ public class FacebookController {
 			auth.setDetails(student);
 			SecurityContextHolder.getContext().setAuthentication(auth);
 			model.addAttribute("student", student);
+		    LOGGER.info(student.toString() +" logged in");
 			social = "fb";
 			redirectAttributes.addFlashAttribute("social", social);
 			return "redirect:/user/homeStudent";

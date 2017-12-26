@@ -2,12 +2,13 @@ package it.uniroma3.icr.controller;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Collections;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -20,7 +21,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import it.uniroma3.icr.model.ComparatorePerData;
 import it.uniroma3.icr.model.Image;
 import it.uniroma3.icr.model.Job;
 import it.uniroma3.icr.model.Result;
@@ -42,6 +42,8 @@ import it.uniroma3.icr.service.impl.TaskFacade;
 
 @Controller
 public class TaskController {
+	private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
+
 	private @Autowired ImageEditor imageEditor;
 	private @Autowired TaskEditor taskEditor;
 	@Autowired
@@ -67,7 +69,7 @@ public class TaskController {
 
 	@Autowired
 	private StudentFacade userFacade;
-	
+
 	@InitBinder
 	public void initBinder(WebDataBinder binder) {
 		binder.registerCustomEditor(Image.class, this.imageEditor);
@@ -116,6 +118,7 @@ public class TaskController {
 	public String taskChoose(@ModelAttribute Task task, @ModelAttribute Job job, @ModelAttribute Result result,
 			@ModelAttribute("taskResults") TaskWrapper taskResults, Model model, HttpServletRequest request,
 			@RequestParam(name = "social", required = false) String social) {
+
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		String s = auth.getName();
 		model.addAttribute("social", social);
@@ -125,35 +128,48 @@ public class TaskController {
 		else
 			student = studentFacadesocial.findUser(s);
 		model.addAttribute("student", student);
-		task = taskFacade.assignTask(student);
-		if (task != null) {
-			List<Sample> positiveSamples = sampleService.findAllSamplesBySymbolId(task.getJob().getSymbol().getId());
-			List<Sample> negativeSamples = negativeSampleService
-					.findAllNegativeSamplesBySymbolId(task.getJob().getSymbol().getId());
 
-			List<Result> listResults = resultFacade.findTaskResult(task);
+		task = taskFacade.assignTask(student);    // blocca task
+
+		if ((task != null) && (task.getStudent() !=null)) {
+			task.setStudent(student);
+			
+			LOGGER.info("1 - assigned Task " + task.getId() + " to student "+ student.getId() + " (" + task.getStudent().getId() +")");
+			List<Sample> positiveSamples = sampleService.findAllSamplesBySymbolId(task.getJob().getSymbol().getId());
+			List<Sample> negativeSamples = negativeSampleService.findAllNegativeSamplesBySymbolId(task.getJob().getSymbol().getId());
+
+//			List<Result> listResults = resultFacade.findTaskResult(task);
+			List<Result> listResults = taskFacade.findTaskResult(task, student);
+			
 			String url = "users/newTaskImage";
-			/*
-			 * if(task.getJob().getWords()!=null){ ComparatoreResultPerWordeX c = new
-			 * ComparatoreResultPerWordeX(); listResults.sort(c); url =
-			 * "users/newTaskWordSocial";
-			 * 
-			 * }else{ Collections.shuffle(listResults); url = "users/newTaskImage"; }
-			 */
 			taskResults.setResultList(listResults);
 			for (Result r : taskResults.getResultList()) {
+				LOGGER.info("1.1 - retrieved task " + r.getTask().getId() +" student " + r.getTask().getStudent().getId() + " (for " + student.getId() + ")");
 				r.getImage().setPath(r.getImage().getPath().replace(File.separatorChar, '/'));
 			}
+
 			String hint = taskFacade.findHintByTask(taskResults.getResultList().get(0).getTask());
+					
+			LOGGER.info("2 - hint on task "+ task.getId() +" to student "+ student.getId());
+
+			for (Result r : taskResults.getResultList()) {
+				LOGGER.info("3 - hint on task "+ r.getTask().getId() +" to student "+ student.getId() + " result "+r.getId());
+			}
 
 			model.addAttribute("student", student);
-
 			model.addAttribute("positiveSamples", positiveSamples);
 			model.addAttribute("negativeSamples", negativeSamples);
-
 			model.addAttribute("task", task);
 			model.addAttribute("taskResults", taskResults);
 			model.addAttribute("hint", hint);
+			
+			LOGGER.info("4 - end taskChoose task " + 
+			task.getId() + "(task results " + 
+					taskResults.getResultList().get(0).getTask().getId() + 
+					" size " + taskResults.getResultList().size() + 
+					") by student " + student.getId() + " (" + 
+					taskResults.getResultList().get(0).getTask().getStudent().getId() + ")");				
+
 			return url;
 		}
 
@@ -196,54 +212,88 @@ public class TaskController {
 			@RequestParam(name = "social", required = false) String social) throws IOException {
 
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		String s = auth.getName();
+		String username = auth.getName();
 		model.addAttribute("social", social);
 		Student student;
-		if (social == null || social.isEmpty())
-			student = studentFacade.findUser(s);
-		else
-			student = studentFacadesocial.findUser(s);
-		
 
+		if (social == null || social.isEmpty())
+			student = studentFacade.findUser(username);
+		else
+			student = studentFacadesocial.findUser(username);
+
+		LOGGER.info("5 - Auth name " + username + ", student: " + student.getId());
 		String action = request.getParameter("action");
 		String targetUrl = "";
 
 		String conferma1 = "Conferma e vai al prossimo task";
-		String conferma2 = "Conferma e torna alla pagina dello studente";
-
+		boolean differentId = false;
+		
 		if (conferma1.equals(action)) {
-			int tempTime = 0;
-			int tempTask = 0;
 			for (Result result : taskResults.getResultList()) {
-				Task task = result.getTask();
-				taskFacade.updateEndDate(task);
-				if (result.getAnswer() == null)
-					result.setAnswer("No");
-				tempTime = (int)(task.getEndDate().getTime() - task.getStartDate().getTime())/1000;
-				if (tempTime > 300) tempTime = 300;
-				tempTask++;
-			}
-			resultFacade.updateListResult(taskResults);
-			student.setTempoEffettuato(student.getTempoEffettuato() + tempTime);
-			student.setTaskEffettuati(student.getTaskEffettuati() + tempTask);
-			userFacade.retrieveUser(student);
-			response.sendRedirect("newTask");
-			targetUrl = "users/newTaskImage";
-		} else {
-			if (conferma2.equals(action)) {
+				LOGGER.info("5.0 - task: " + result.getTask().getId() + " result " + result.getId() + " student.getId() " + student.getId() +" - result.getTask().getStudent().getId(): " + result.getTask().getStudent().getId());
+				if(!student.getId().equals(result.getTask().getStudent().getId())) {
+					LOGGER.info("5.1 - task: " + result.getTask().getId() + " result " + result.getId() + " student.getId() " + student.getId() +" - result.getTask().getStudent().getId(): " + result.getTask().getStudent().getId());
+					Long id = taskFacade.findStudentIdOnTask(result.getTask());
+					if (student.getId()!=id) { // non e' il mio task
+						LOGGER.info("5.1.1 - task: " + result.getTask().getId() + " student.getId() " + student.getId() +" - result.getTask().getStudent().getId(): " + result.getTask().getStudent().getId());
+						differentId = true;
+					}
+				}
+			}			
+			if (!differentId) {
+				int tempTime = 0;
+				int tempTask = 0;
 				for (Result result : taskResults.getResultList()) {
 					Task task = result.getTask();
 					taskFacade.updateEndDate(task);
 					if (result.getAnswer() == null)
 						result.setAnswer("No");
+					tempTime = (int)(task.getEndDate().getTime() - task.getStartDate().getTime())/1000;
+					if (tempTime > 300) 
+						tempTime = 300;
+					tempTask++;
+					LOGGER.info("6 - task " + task.getId() +" accomplished by student " + student.getId() + " - result " + result.getId());
 				}
+				
 				resultFacade.updateListResult(taskResults);
+				
+				for (Result result : taskResults.getResultList()) {
+					LOGGER.info("7 - AFTER update: task " + result.getTask().getId()+" accomplished by student " + student.getId() + " - result " + result.getId());
+				}
+				student.setTempoEffettuato(student.getTempoEffettuato() + tempTime);
+				student.setTaskEffettuati(student.getTaskEffettuati() + tempTask);
+				for (Result result : taskResults.getResultList()) {
+					LOGGER.info("8 - before save: task "+ result.getTask().getId() +" accomplished by student " + student.getId() + " - result " + result.getId());
+				}
+				taskFacade.updateStudent(student);
+				//userFacade.saveUser(student);  
+
+				for (Result result : taskResults.getResultList()) {
+					LOGGER.info("9 - after save: task "+ result.getTask().getId() +" accomplished by student " + student.getId() + " - result " + result.getId());
+				}
+				model.addAttribute("student", student);
 			}
-			targetUrl = "users/homeStudent";
-		}
+
+			
+//			model.addAttribute("taskResults", taskResults);
+			
+			response.sendRedirect("newTask");
+			targetUrl = "users/newTaskImage";
+		} 
+//		else {
+//			if (conferma2.equals(action)) {
+//				for (Result result : taskResults.getResultList()) {
+//					Task task = result.getTask();
+//					taskFacade.updateEndDate(task);
+//					if (result.getAnswer() == null)
+//						result.setAnswer("No");
+//				}
+//				resultFacade.updateListResult(taskResults);
+//			}
+//			targetUrl = "users/homeStudent";
+//		}
 		model.addAttribute("student", student);
 		return targetUrl;
-
 	}
 
 	/*
@@ -278,7 +328,7 @@ public class TaskController {
 	 * }
 	 */
 
-	@RequestMapping(value = "user/secondConsole", method = RequestMethod.POST)
+	@RequestMapping(value = "user/secondConsole_", method = RequestMethod.POST)
 	public String taskRecap(@ModelAttribute("taskResults") TaskWrapper taskResults, Model model,
 			HttpServletRequest request, HttpServletResponse response,
 			@RequestParam(name = "social", required = false) String social) throws IOException {
@@ -348,7 +398,7 @@ public class TaskController {
 			//studentTasks = taskFacade.findTaskByStudentSocial(s.getId());
 		}
 		/*List<Task> studentTasks;
-		
+
 
 		Collections.sort(studentTasks, new ComparatorePerData());
 		model.addAttribute("studentTasks", studentTasks);*/

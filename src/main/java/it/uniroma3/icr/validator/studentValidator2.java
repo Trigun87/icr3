@@ -1,5 +1,7 @@
 package it.uniroma3.icr.validator;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.ui.Model;
 
 import it.uniroma3.icr.model.Administrator;
@@ -11,7 +13,6 @@ public class studentValidator2 {
 	
 	public static boolean validate(StudentSocial student, Model model,StudentSocial u,Administrator a) {
 		boolean verifica=true;
-		
 		
 		if(student.getName().equals("")){
 			verifica=false;
@@ -36,7 +37,7 @@ public class studentValidator2 {
 			model.addAttribute("usernameError","Username gia' esistente");
 		
 		}
-		
+
 		return verifica;
 	}
 

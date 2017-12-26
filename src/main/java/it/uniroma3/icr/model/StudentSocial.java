@@ -131,4 +131,17 @@ public class StudentSocial extends Student {
 	public void addTask(Task t) {
 		this.tasks.add(t);
 	}
+	
+	public String toString() {
+		return this.getId()+" "+this.getName()+" "+this.getSurname()+" username:{" + this.getUsername() + "}";
+	}
+	
+	public boolean equals(Object object) {
+		StudentSocial student = (StudentSocial)object;
+		return this.id.equals(student.getId());
+	}
+
+	public int hashCode() {
+		return this.id.hashCode();
+	}
 }

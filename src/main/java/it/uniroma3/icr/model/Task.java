@@ -111,5 +111,15 @@ public class Task {
 	public String toString() {
 		return "Task [id=" + id;
 	}
+	
+	public boolean equals(Object object) {
+		Task task = (Task)object;
+		return this.id.equals(task.getId());
+	}
+	
+	public int hash() {
+		return this.id.hashCode();
+	}
+	
 
 }

@@ -35,19 +35,22 @@
 <body class="landing">
 	<ul>
 		<li>
-			<h2>${student.name} ${student.surname}</h2>
+			<h2>${student.name} ${student.surname} (${student.id})</h2>
 
-			<h2>Stai svolgendo il task relativo al ${task.job.title}
-				${task.job.symbol.transcription}</h2>
+			<h2>Stai svolgendo il task ${student.taskEffettuati}</h2>
 		</li>
 
 	</ul>
 
 	<div align="center">
-		<h3 class="selectword">Seleziona le parti della lettera che ti
-			sembrano simili agli esempi sottostanti</h3>
-		<h3 class="selectchar">Conferma se la lettera è simile agli
-			esempi sottostanti</h3>
+		<h3 class="selectword">
+			Guarda la parola al centro della pagina. <br/>Se individui uno o piu' simboli simili a quelli evidenziati in verde (ma diversi da quelli in rosso),<br/>
+			marcane le regioni e premi Conferma e vai al prossimo task. <br/>Se non individui il simbolo cercato, premi Conferma e vai al prossimo task (senza marcare niente).
+		</h3>
+		<h3 class="selectchar">
+			Guarda il frammento di parola al centro della pagina. <br/>Contiene (interamente) un simbolo simile a quelli evidenziati in verde (ma diverso 
+			da quelli in rosso)?
+		</h3>
 
 		<table class="pos">
 			<tr>
@@ -68,6 +71,7 @@
 
 
 		<div align="center">
+			
 			<table class="${task.job.difficulty}">
 				<c:forEach varStatus="vs" var="result"
 					items="${taskResults.resultList}">

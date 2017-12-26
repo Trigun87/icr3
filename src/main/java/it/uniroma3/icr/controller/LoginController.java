@@ -3,6 +3,8 @@ package it.uniroma3.icr.controller;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -22,6 +24,7 @@ import it.uniroma3.icr.service.impl.TaskFacade;
 
 @Controller
 public class LoginController  {
+	private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
 	public TaskFacade taskFacade;
@@ -66,6 +69,7 @@ public class LoginController  {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		String role = auth.getAuthorities().toString();
 		Student student = studentFacade.findUser(auth.getName());
+		
 		String targetUrl = "";
 		if(role.contains("ROLE_USER")) {
 			model.addAttribute("student", student);

@@ -25,7 +25,7 @@ public class Student {
 	@Column(nullable=false)
 	private String school;
 
-	@Column(nullable = false)
+	@Column(nullable = false) //, unique=true)
 	private String username;
 
 	@Column(nullable = false)
@@ -153,4 +153,15 @@ public class Student {
 	public void addTask(Task t) {
 		this.tasks.add(t);
 	}
+	
+	public boolean equals(Object object) {
+		Student student = (Student)object;
+		return this.id.equals(student.getId());
+	}
+
+	public int hashCode() {
+		return this.id.hashCode();
+	}
+
+
 }

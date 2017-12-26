@@ -26,9 +26,7 @@ public class SampleDaoImpl implements SampleDaoCustom {
 		Query query = this.entityManager.createQuery(s);
 		query.setParameter("id", id);
 		List<Sample> samples = query.getResultList();
-		System.out.println("List Samples"+samples);
 		return samples;
-
 	}
 
 }

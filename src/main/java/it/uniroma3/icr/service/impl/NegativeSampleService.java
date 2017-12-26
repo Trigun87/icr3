@@ -65,8 +65,10 @@ public class NegativeSampleService {
 						int height = f.getHeight();
 						int xImg = x;
 						int yImg = y;
-						String path = pathFile.substring(pathFile.indexOf("main/resources/static")+22, pathFile.length());
+//						String path = pathFile.substring(pathFile.indexOf("main/resources/static")+22, pathFile.length());
+						String path = pathFile.substring(pathFile.indexOf("classes/static") + 15, pathFile.length());
 
+						
 						String type = typeSymbol;
 
 						NegativeSample negativeSample = new NegativeSample(width,height,xImg,yImg,manuscript,

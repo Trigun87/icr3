@@ -7,6 +7,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,6 +22,7 @@ import it.uniroma3.icr.model.Task;
 
 @Service
 public class TaskFacade {
+	private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
 	private TaskDao taskDao;
@@ -29,7 +32,7 @@ public class TaskFacade {
 	@PersistenceContext
 	private EntityManager entityManager;
 
-	public void addTask(Task t) {
+	public void saveTask(Task t) {
 		taskDao.save(t);
 	}
 
@@ -54,35 +57,111 @@ public class TaskFacade {
 		return tasks;
 	}
 
+	@Transactional
 	@SuppressWarnings("unchecked")
-	public Task assignTask(Student s) {
+	public Task assignTask(Student student) {
 		Task task = null;
-		String sr1 = "SELECT t FROM Task t WHERE t.batch not in (SELECT distinct batch FROM Task t2 WHERE t2.student.id= ?1 and t2.endDate IS NOT NULL) and ((t.student.id= ?2 AND t.endDate IS NULL) OR (t.student.id IS NULL)) ORDER BY t.student.id";
-		Query query1 = this.entityManager.createQuery(sr1).setMaxResults(1).setParameter(1, s.getId()).setParameter(2,
-				s.getId());
+		String select = null;
+
+		select = "SELECT t "
+				+ "FROM Task t "
+				+ "WHERE (t.student.id= ?1 AND t.endDate IS NULL AND t.startDate IS NOT NULL)"; // task assegnati allo studente ma lasciati in sospeso 
+		Query query1 = this.entityManager.createQuery(select).setParameter(1, student.getId());
 		List<Task> taskList = query1.getResultList(); // trova il task da eseguire
 
-		if (taskList.size() > 0) {
+		if (taskList.size()!=0) {
 			task = taskList.get(0);
-			task.setStudent(s);
-			if (task.getStartDate() == null) {
+			task.setStudent(student);
+//			student.addTask(task);  
+			LOGGER.info("0 - Resumed task " + task.getId() + " for student " + student.getId());
+			return task;
+		}
+		else {      //if (taskList.size() == 0) {  // non ci sono task in sospeso
+			select = "SELECT t FROM Task t "
+					+ "WHERE t.batch not in ("                               // task già fatti dallo studente
+						+ "SELECT distinct batch "  
+						+ "FROM Task t2 "
+						+ "WHERE t2.student.id= ?1 and t2.endDate IS NOT NULL) "
+					+ "AND (t.student.id IS NULL)"; // task non assegnati 
+			query1 = this.entityManager.createQuery(select).setMaxResults(53).setParameter(1, student.getId());
+			taskList = query1.getResultList(); // trova il task da eseguire
+
+			if (taskList.size()!=0) {  // ci sono ancora task
+				int position = (int)(student.getId() % taskList.size());
+				LOGGER.info("0 - New task " + taskList.get(position).getId() + " to student " + student.getId() );
+
 				Calendar calendar = Calendar.getInstance();
 				java.util.Date now = calendar.getTime();
 				java.sql.Timestamp date = new java.sql.Timestamp(now.getTime());
-				task.setStartDate(date);
-			}
 
-			if (task != null) {
-				s.addTask(task);
-				this.taskDao.save(task);
+				//	this.taskDao.save(task);
+				LOGGER.info("SQL UPDATE update task set start_date = "+ date + " student_id = " + student.getId() + " where id = " + taskList.get(position));
+
+				String update = "update task set start_date = ?1, student_id = ?2 where id = ?3 and student_id is null";
+				query1 = this.entityManager.createNativeQuery(update).setParameter(1, date).setParameter(2, student.getId()).setParameter(3, taskList.get(position).getId());
+				int numRow = query1.executeUpdate();	
+				if (numRow==1) {		
+					task = taskList.get(position);
+					task.setStudent(student);
+					task.setStartDate(date);
+					student.addTask(task); 
+				}
+				else {
+					LOGGER.info("0.1 - race on task " + taskList.get(position) + ". Try another task for student " + student.getId());
+					task = assignTask(student);
+//					task.setStudent(student);
+//					task.setStartDate(date);
+//					student.addTask(task); 
+				}
+			}
+			else { // i task sono finiti
+				return null;
 			}
 		}
 		return task;
 	}
 
+	/*
+	@Transactional
+	public Task assignTask(Student s) {
+		Task task = null;
+		Calendar calendar = Calendar.getInstance();
+		java.util.Date now = calendar.getTime();
+		java.sql.Timestamp date = new java.sql.Timestamp(now.getTime());
+		String sr1 = "update task t3  set start_date = case when start_date is null then '" + date
+				+ "' else start_date end, student_id = ?1 where id = (SELECT id FROM Task t WHERE t.batch not in (SELECT distinct batch FROM Task t2 WHERE t2.student_id= ?2 and t2.end_Date IS NOT NULL) and ((t.student_id= ?3 AND t.end_Date IS NULL) OR (t.student_id IS NULL)) ORDER BY t.student_id LIMIT 1)";
+		Query query1 = this.entityManager.createNativeQuery(sr1).setParameter(1, s.getId()).setParameter(2, s.getId())
+				.setParameter(3, s.getId());
+		LOGGER.info("Update: student " + s.getId());
+
+		if (query1.executeUpdate() == 1) {
+			sr1 = "SELECT t FROM Task t WHERE t.batch not in (SELECT distinct batch FROM Task t2 WHERE t2.student.id= ?1 and t2.endDate IS NOT NULL) and ((t.student.id= ?2 AND t.endDate IS NULL) OR (t.student.id IS NULL)) ORDER BY t.student.id";
+			query1 = this.entityManager.createQuery(sr1).setMaxResults(1).setParameter(1, s.getId()).setParameter(2, s.getId());
+
+
+			Task taskList = (Task) query1.getSingleResult(); // trova il task da eseguire
+			LOGGER.info("Select: task " + taskList.getId() );
+			if (taskList.getStudent()==null) {
+				LOGGER.info("Select: student was null for task" + taskList.getId());
+			}
+			else {
+				LOGGER.info("Select: student was " + taskList.getStudent().getId());
+			}
+			if ((taskList != null) && (taskList.getStudent() != null)) {
+				task = taskList;
+				task.setStudent(s);
+				s.addTask(task);
+				LOGGER.info("Assigned task " + task.getId() + " to student " + s.getId() );
+			}
+		}
+		return task;
+	}
+	 */
+
 	@SuppressWarnings("unchecked")
 	public String findHintByTask(Task t) {
 		String sr1 = "select answer, count(*) c from result where task_id in (select id from task where batch = ?1 and job_id = ?2) and answer is not null group by answer HAVING count(*) >= ?3 order by c";
+
 		Query query1 = this.entityManager.createNativeQuery(sr1).setMaxResults(1).setParameter(1, t.getBatch())
 				.setParameter(2, t.getJob().getId());
 		if (t.getJob().isTutorial())
@@ -210,7 +289,7 @@ public class TaskFacade {
 					task.setBatch(batchNumber);
 					task.setJob(job);
 					job.addTask(task);
-					this.addTask(task);
+					this.saveTask(task);
 					batchNumber++;
 				}
 				Image j = job.getImages().get(r);
@@ -223,4 +302,43 @@ public class TaskFacade {
 
 	}
 
+	@Transactional
+	public void updateStudent(Student student) {
+
+		LOGGER.info("SQL UPDATE: update student set task_effettuati " + student.getTaskEffettuati() + ", tempo_effettuato = " + student.getTempoEffettuato() +" where id = " + student.getId());
+
+		String update = "update student set task_effettuati = ?1, tempo_effettuato = ?2 where id = ?3";
+		Query query1 = this.entityManager.createNativeQuery(update).setParameter(1, student.getTaskEffettuati()).setParameter(2, student.getTempoEffettuato()).setParameter(3, student.getId());
+		int numRow = query1.executeUpdate();	
+		if (numRow==1) {		
+			LOGGER.info("8.1 - Update time and number of tasks for student " + student.getId());
+		}
+		else {
+			LOGGER.info("8.2 - Problem updating time and number of tasks for student " + student.getId());
+		}
+	}
+
+	public List<Result> findTaskResult(Task task, Student student) {
+		LOGGER.info("SQL SELECT r RESULT FROM RESULT WHERE TASK_id = " + task.getId());
+		if (task.getStudent().getId()!=student.getId())
+			LOGGER.info("PROBLEM TASK " + task.getId() + " STDUDENT PROBLEM "+ task.getStudent().getId() + " " + student.getId());
+
+		String select = "select r from Result r where r.task.id = ?1";
+		Query query1 = this.entityManager.createQuery(select).setParameter(1, task.getId());
+		@SuppressWarnings("unchecked")
+		List<Result> resultList = query1.getResultList(); // trova i result del task
+		return resultList;	
+	}
+
+	public Long findStudentIdOnTask(Task task) {
+		LOGGER.info("SQL SELECT t TASK FROM TASK WHERE id = " + task.getId());
+
+		String select = "select t.student.id from Task t where t.id = ?1";
+		Query query1 = this.entityManager.createQuery(select).setParameter(1, task.getId());
+
+		Long id = (Long)query1.getSingleResult(); // trova i result del task
+		LOGGER.info("STUDENT FROM DB: = " + id + " for task " + task.getId());
+		return id;	
+	}
+	
 }

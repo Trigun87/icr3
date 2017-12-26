@@ -24,7 +24,7 @@ public class Result {
 	@ManyToOne
 	private Task task;
 
-	@Column
+	@Column(length=1024)
 	private String answer;
 	
 	public Result() {}
@@ -71,6 +71,15 @@ public class Result {
 		this.answer = answer;
 	}
 
+	public boolean equals(Object object) {
+		Result result = (Result)object;
+		return this.id.equals(result.getId());
+	}
+	
+	public int hash() {
+		return this.id.hashCode();
+	}
+	
 	@Override
 	public String toString() {
 		return "Result [id=" + id + ", "

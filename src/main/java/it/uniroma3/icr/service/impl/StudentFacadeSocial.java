@@ -14,7 +14,7 @@ public class StudentFacadeSocial {
 	@Autowired
 	private StudentDaoSocial userDao;
 	
-	public void retrieveUser(StudentSocial user) {
+	public void saveUser(StudentSocial user) {
 		userDao.save(user);
 	}
 	

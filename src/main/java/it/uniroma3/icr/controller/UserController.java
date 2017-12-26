@@ -3,6 +3,8 @@ package it.uniroma3.icr.controller;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.Authentication;
@@ -33,6 +35,8 @@ import it.uniroma3.icr.validator.studentValidator2;
 
 @Controller
 public class UserController {
+	
+	private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
 	private Facebook facebook;
@@ -87,7 +91,7 @@ public class UserController {
 			String passwordEncode = passwordEncoder.encode(student.getPassword());
 			student.setPassword(passwordEncode);
 			model.addAttribute("student", student);
-			userFacade.retrieveUser(student);
+			userFacade.saveUser(student);
 			return "registrationRecap";
 		} else {
 			return "registration";
@@ -106,12 +110,17 @@ public class UserController {
 		model.addAttribute("schoolGroups", schoolGroups);
 
 		StudentSocial u = userFacadesocial.findUser(student.getUsername());
-
+		LOGGER.info("FB authorized (student) for "+ student.toString());
+		
 		Administrator a = adminFacade.findAdmin(student.getUsername());
-
+		if (u!=null) {
+			LOGGER.info("FB authorized (u) for "+ u.toString());
+			LOGGER.info("FB validation (u) for "+ u.toString() + " is " +studentValidator2.validate(student, model, u, a));
+		}
+	
 		if (studentValidator2.validate(student, model, u, a)) {
 			model.addAttribute("student", student);
-			userFacadesocial.retrieveUser(student);
+			userFacadesocial.saveUser(student);
 			model.addAttribute("social", "fb");
 			return "registrationRecap";
 		} else {
@@ -135,7 +144,7 @@ public class UserController {
 
 		if (studentValidator2.validate(student, model, u, a)) {
 			model.addAttribute("student", student);
-			userFacadesocial.retrieveUser(student);
+			userFacadesocial.saveUser(student);
 			model.addAttribute("social", "goo");
 			return "registrationRecap";
 		} else {
@@ -166,7 +175,7 @@ public class UserController {
 		PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 		String passwordEncode = passwordEncoder.encode(student.getPassword());
 		student.setPassword(passwordEncode);
-		userFacade.retrieveUser(student);
+		userFacade.saveUser(student);
 		return "users/homeStudent";
 	}
 
