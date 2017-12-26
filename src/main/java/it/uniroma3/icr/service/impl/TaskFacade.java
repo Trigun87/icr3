@@ -308,7 +308,8 @@ public class TaskFacade {
 //		LOGGER.info("SQL UPDATE: update student set task_effettuati " + student.getTaskEffettuati() + ", tempo_effettuato = " + student.getTempoEffettuato() +" where id = " + student.getId());
 		String update = "update student set task_effettuati = ?1, tempo_effettuato = ?2 where id = ?3";
 		Query query1 = this.entityManager.createNativeQuery(update).setParameter(1, student.getTaskEffettuati()).setParameter(2, student.getTempoEffettuato()).setParameter(3, student.getId());
-		query1.executeUpdate();	
+		if (query1.executeUpdate()!=1)
+			LOGGER.info("PROBLEM IN SQL UPDATE: update student set task_effettuati " + student.getTaskEffettuati() + ", tempo_effettuato = " + student.getTempoEffettuato() +" where id = " + student.getId());
 	}
 
 	public List<Result> findTaskResult(Task task, Student student) {

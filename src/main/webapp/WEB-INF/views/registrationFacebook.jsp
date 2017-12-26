@@ -50,6 +50,11 @@
 							${errSurname}
 						</div>
 
+						<div class="field-wrap">
+							<label> Email </label>
+							<form:input type="text" path="email" placeholder="Email" value="${email}" />
+							${errEmail}
+						</div>
 						
 						<div class="field-wrap">
 							<label> Scuola </label>
@@ -71,7 +76,7 @@
 						</div>
 
 
-							<form:input type="hidden" path='username' placeholder="Username" value="${email}"  />
+							<form:input type="hidden" path='username' placeholder="Username" value="${id}"  />
 						
 
 						<button type="submit" class="button button-block">Conferma</button>

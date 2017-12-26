@@ -25,7 +25,10 @@ public class Student {
 	@Column(nullable=false)
 	private String school;
 
-	@Column(nullable = false) //, unique=true)
+	@Column(nullable = true)
+	private String email;
+	
+	@Column(nullable = false)
 	private String username;
 
 	@Column(nullable = false)
@@ -142,6 +145,14 @@ public class Student {
 		this.section = section;
 	}
 
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+	
 	public Long getId() {
 		return id;
 	}

@@ -155,6 +155,7 @@ public class TaskController {
 				LOGGER.info("3.1 - hint on task "+ task.getId() + "(" + r.getTask().getId() +") to student " + student.getId() + "(" + r.getTask().getStudent().getId() +")" + " result "+r.getId());
 			}
 
+			task.setStudent(student);
 			model.addAttribute("student", student);
 			model.addAttribute("positiveSamples", positiveSamples);
 			model.addAttribute("negativeSamples", negativeSamples);
@@ -167,7 +168,7 @@ public class TaskController {
 					taskResults.getResultList().get(0).getTask().getId() + 
 					" size " + taskResults.getResultList().size() + 
 					") by student " + student.getId() + " (" + 
-					taskResults.getResultList().get(0).getTask().getStudent().getId() + ")");				
+					taskResults.getResultList().get(0).getTask().getStudent().getId() + " - " +task.getStudent().getId() +")");				
 
 			return "users/newTaskImage";
 		}
@@ -233,13 +234,14 @@ public class TaskController {
 				if(!student.getId().equals(result.getTask().getStudent().getId())) {
 					LOGGER.info("5.1 - task: " + result.getTask().getId() + " result " + result.getId() + " student.getId() " + student.getId() +" - result.getTask().getStudent().getId(): " + result.getTask().getStudent().getId());
 					Long id = taskFacade.findStudentIdOnTask(result.getTask());
-					if (student.getId()!=id) { // non e' il mio task
+					if (!student.getId().equals(id)) { // non e' il mio task
 						LOGGER.info("5.1.1 - task: " + result.getTask().getId() + " student.getId() " + student.getId() +" - result.getTask().getStudent().getId(): " + result.getTask().getStudent().getId());
 						differentId = true;
 					}
 				}
 			}			
 			if (!differentId) {
+				model.addAttribute("student", student);
 				int tempTime = 0;
 				int tempTask = 0;
 				for (Result result : taskResults.getResultList()) {
@@ -270,7 +272,6 @@ public class TaskController {
 				for (Result result : taskResults.getResultList()) {
 					LOGGER.info("9 - after save: task "+ result.getTask().getId() +" accomplished by student " + student.getId() + " - result " + result.getId());
 				}
-				model.addAttribute("student", student);
 			}
 
 			

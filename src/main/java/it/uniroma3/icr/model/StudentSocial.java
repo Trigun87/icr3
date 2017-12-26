@@ -27,6 +27,9 @@ public class StudentSocial extends Student {
 
 	@Column(nullable = false)
 	private String username;
+	
+	@Column(nullable = true)
+	private String email;
 
 	@Column(nullable = false)
 	private String schoolGroup;
@@ -116,6 +119,14 @@ public class StudentSocial extends Student {
 		return section;
 	}
 
+	public String getEmail() {
+		return this.email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+	
 	public void setSection(String section) {
 		this.section = section;
 	}

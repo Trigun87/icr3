@@ -40,7 +40,7 @@
 			<th>Scuola</th>
 			<th>Anno</th>
 			<th>Sezione</th>
-			<th>Username</th>
+			<th>Email</th>
 		</tr>
 
 		<tr>
@@ -49,7 +49,7 @@
 			<th>${student.school}</th>
 			<th>${student.schoolGroup}</th>
 			<th>${student.section}</th>
-			<th>${student.username}</th>
+			<th>${student.email}</th>
 		</tr>
 	</table>
 	

@@ -57,13 +57,19 @@ public class FacebookController {
 		}
 
 		
-		String[] fields = { "name", "email" };
-		User user = facebook.fetchObject("me", User.class, fields);
+//		String[] fields = { "name", "email" };
+		String[] fields = { "first_name", "last_name", "email" };
 
 		
-		String email = user.getEmail();
+		User user = facebook.fetchObject("me", User.class, fields);
+//		User user = facebook.fetchObject("me", User.class);
 
-		StudentSocial student = userFacadesocial.findUser(email);
+
+		String email = user.getEmail();
+		String id = user.getId();
+
+//		StudentSocial student = userFacadesocial.findUser(email);
+		StudentSocial student = userFacadesocial.findUser(id);
 
 		if (student != null) {
 			SimpleGrantedAuthority authority = new SimpleGrantedAuthority("ROLE_USER");
@@ -81,15 +87,20 @@ public class FacebookController {
 			return "redirect:/user/homeStudent";
 		}
 
-		String userprofile = user.getName();
-		String[] temp;
-		String delimiter = " ";
-		temp = userprofile.split(delimiter);
-		String name = temp[0];
-		String surname = temp[1];
+//		String userprofile = user.getName();
+//		String[] temp;
+//		String delimiter = " ";
+//		temp = userprofile.split(delimiter);
+//		String name = temp[0];
+//		String surname = temp[1];
+		String name = user.getFirstName();
+		String surname = user.getLastName();
+//		String email = user.getEmail();
+		
 		model.addAttribute("nome", name);
 		model.addAttribute("cognome", surname);
 		model.addAttribute("email", email);
+		model.addAttribute("id", id);
 		model.addAttribute("student", new StudentSocial());
 
 		Map<String, String> schoolGroups = new HashMap<String, String>();
