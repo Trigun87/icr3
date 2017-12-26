@@ -141,19 +141,18 @@ public class TaskController {
 //			List<Result> listResults = resultFacade.findTaskResult(task);
 			List<Result> listResults = taskFacade.findTaskResult(task, student);
 			
-			String url = "users/newTaskImage";
 			taskResults.setResultList(listResults);
 			for (Result r : taskResults.getResultList()) {
-				LOGGER.info("1.1 - retrieved task " + r.getTask().getId() +" student " + r.getTask().getStudent().getId() + " (for " + student.getId() + ")");
+				LOGGER.info("2 - retrieved task " + r.getTask().getId() +" student " + r.getTask().getStudent().getId() + " (for " + student.getId() + ")");
 				r.getImage().setPath(r.getImage().getPath().replace(File.separatorChar, '/'));
 			}
 
 			String hint = taskFacade.findHintByTask(taskResults.getResultList().get(0).getTask());
 					
-			LOGGER.info("2 - hint on task "+ task.getId() +" to student "+ student.getId());
+			LOGGER.info("3 - hint on task "+ task.getId() +" to student "+ student.getId());
 
 			for (Result r : taskResults.getResultList()) {
-				LOGGER.info("3 - hint on task "+ r.getTask().getId() +" to student "+ student.getId() + " result "+r.getId());
+				LOGGER.info("3.1 - hint on task "+ task.getId() + "(" + r.getTask().getId() +") to student " + student.getId() + "(" + r.getTask().getStudent().getId() +")" + " result "+r.getId());
 			}
 
 			model.addAttribute("student", student);
@@ -164,13 +163,13 @@ public class TaskController {
 			model.addAttribute("hint", hint);
 			
 			LOGGER.info("4 - end taskChoose task " + 
-			task.getId() + "(task results " + 
+					task.getId() + "(task results " + 
 					taskResults.getResultList().get(0).getTask().getId() + 
 					" size " + taskResults.getResultList().size() + 
 					") by student " + student.getId() + " (" + 
 					taskResults.getResultList().get(0).getTask().getStudent().getId() + ")");				
 
-			return url;
+			return "users/newTaskImage";
 		}
 
 		return "users/goodBye";
