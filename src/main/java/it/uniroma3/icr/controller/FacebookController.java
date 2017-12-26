@@ -98,7 +98,6 @@ public class FacebookController {
 		schoolGroups.put("5", "5");
 		model.addAttribute("schoolGroups", schoolGroups);
 		return "/registrationFacebook";
-
 	}
 
 }
