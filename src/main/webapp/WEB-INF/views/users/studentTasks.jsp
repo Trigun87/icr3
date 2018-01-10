@@ -54,8 +54,6 @@
 		</tr>
 	</table>
 
-	<table>
-
 		<!-- Scripts -->
 		<script src="${pageContext.request.contextPath}/js/jquery.min.js"></script>
 		<script

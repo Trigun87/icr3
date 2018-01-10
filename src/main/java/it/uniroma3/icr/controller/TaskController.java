@@ -67,9 +67,6 @@ public class TaskController {
 	@Autowired
 	ResultFacade resultFacade;
 
-	@Autowired
-	private StudentFacade userFacade;
-
 	@InitBinder
 	public void initBinder(WebDataBinder binder) {
 		binder.registerCustomEditor(Image.class, this.imageEditor);
@@ -129,12 +126,12 @@ public class TaskController {
 			student = studentFacadesocial.findUser(s);
 		model.addAttribute("student", student);
 
-		task = taskFacade.assignTask(student);    // blocca task
+		task = taskFacade.assignTask(student);  
 
 		if ((task != null) && (task.getStudent() !=null)) {
 			task.setStudent(student);
 			
-			LOGGER.info("1 - assigned Task " + task.getId() + " to student "+ student.getId() + " (" + task.getStudent().getId() +")");
+			LOGGER.debug("1 - assigned Task " + task.getId() + " to student "+ student.getId() + " (" + task.getStudent().getId() +")");
 			List<Sample> positiveSamples = sampleService.findAllSamplesBySymbolId(task.getJob().getSymbol().getId());
 			List<Sample> negativeSamples = negativeSampleService.findAllNegativeSamplesBySymbolId(task.getJob().getSymbol().getId());
 
@@ -143,16 +140,16 @@ public class TaskController {
 			
 			taskResults.setResultList(listResults);
 			for (Result r : taskResults.getResultList()) {
-				LOGGER.info("2 - retrieved task " + r.getTask().getId() +" student " + r.getTask().getStudent().getId() + " (for " + student.getId() + ")");
+				LOGGER.debug("2 - retrieved task " + r.getTask().getId() +" student " + r.getTask().getStudent().getId() + " (for " + student.getId() + ")");
 				r.getImage().setPath(r.getImage().getPath().replace(File.separatorChar, '/'));
 			}
 
 			String hint = taskFacade.findHintByTask(taskResults.getResultList().get(0).getTask());
 					
-			LOGGER.info("3 - hint on task "+ task.getId() +" to student "+ student.getId());
+			LOGGER.debug("3 - hint on task "+ task.getId() +" to student "+ student.getId());
 
 			for (Result r : taskResults.getResultList()) {
-				LOGGER.info("3.1 - hint on task "+ task.getId() + "(" + r.getTask().getId() +") to student " + student.getId() + "(" + r.getTask().getStudent().getId() +")" + " result "+r.getId());
+				LOGGER.debug("3.1 - hint on task "+ task.getId() + "(" + r.getTask().getId() +") to student " + student.getId() + "(" + r.getTask().getStudent().getId() +")" + " result "+r.getId());
 			}
 
 			task.setStudent(student);
@@ -163,7 +160,7 @@ public class TaskController {
 			model.addAttribute("taskResults", taskResults);
 			model.addAttribute("hint", hint);
 			
-			LOGGER.info("4 - end taskChoose task " + 
+			LOGGER.debug("4 - end taskChoose task " + 
 					task.getId() + "(task results " + 
 					taskResults.getResultList().get(0).getTask().getId() + 
 					" size " + taskResults.getResultList().size() + 
@@ -221,7 +218,7 @@ public class TaskController {
 		else
 			student = studentFacadesocial.findUser(username);
 
-		LOGGER.info("5 - Auth name " + username + ", student: " + student.getId());
+		LOGGER.debug("5 - Auth name " + username + ", student: " + student.getId());
 		String action = request.getParameter("action");
 		String targetUrl = "";
 
@@ -230,12 +227,12 @@ public class TaskController {
 		
 		if (conferma1.equals(action)) {
 			for (Result result : taskResults.getResultList()) {
-				LOGGER.info("5.0 - task: " + result.getTask().getId() + " result " + result.getId() + " student.getId() " + student.getId() +" - result.getTask().getStudent().getId(): " + result.getTask().getStudent().getId());
+				LOGGER.debug("5.0 - task: " + result.getTask().getId() + " result " + result.getId() + " student.getId() " + student.getId() +" - result.getTask().getStudent().getId(): " + result.getTask().getStudent().getId());
 				if(!student.getId().equals(result.getTask().getStudent().getId())) {
-					LOGGER.info("5.1 - task: " + result.getTask().getId() + " result " + result.getId() + " student.getId() " + student.getId() +" - result.getTask().getStudent().getId(): " + result.getTask().getStudent().getId());
+					LOGGER.warn("5.1 - task: " + result.getTask().getId() + " result " + result.getId() + " student.getId() " + student.getId() +" - result.getTask().getStudent().getId(): " + result.getTask().getStudent().getId());
 					Long id = taskFacade.findStudentIdOnTask(result.getTask());
 					if (!student.getId().equals(id)) { // non e' il mio task
-						LOGGER.info("5.1.1 - task: " + result.getTask().getId() + " student.getId() " + student.getId() +" - result.getTask().getStudent().getId(): " + result.getTask().getStudent().getId());
+						LOGGER.error("5.1.1 - task: " + result.getTask().getId() + " student.getId() " + student.getId() +" - result.getTask().getStudent().getId(): " + result.getTask().getStudent().getId());
 						differentId = true;
 					}
 				}
@@ -253,18 +250,18 @@ public class TaskController {
 					if (tempTime > 300) 
 						tempTime = 300;
 					tempTask++;
-					LOGGER.info("6 - task " + task.getId() +" accomplished by student " + student.getId() + " - result " + result.getId());
+					LOGGER.debug("6 - task " + task.getId() +" accomplished by student " + student.getId() + " - result " + result.getId());
 				}
 				
 				resultFacade.updateListResult(taskResults);
 				
 				for (Result result : taskResults.getResultList()) {
-					LOGGER.info("7 - AFTER update: task " + result.getTask().getId()+" accomplished by student " + student.getId() + " - result " + result.getId());
+					LOGGER.debug("7 - AFTER update: task " + result.getTask().getId()+" accomplished by student " + student.getId() + " - result " + result.getId());
 				}
 				student.setTempoEffettuato(student.getTempoEffettuato() + tempTime);
 				student.setTaskEffettuati(student.getTaskEffettuati() + tempTask);
 				for (Result result : taskResults.getResultList()) {
-					LOGGER.info("8 - before save: task "+ result.getTask().getId() +" accomplished by student " + student.getId() + " - result " + result.getId());
+					LOGGER.debug("8 - before save: task "+ result.getTask().getId() +" accomplished by student " + student.getId() + " - result " + result.getId());
 				}
 				taskFacade.updateStudent(student);
 				//userFacade.saveUser(student);  

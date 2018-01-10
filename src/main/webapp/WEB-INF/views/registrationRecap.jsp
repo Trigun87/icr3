@@ -30,7 +30,8 @@
 <jsp:include page="menu.jsp" />
 	
 	<div class="relative">
-		<h2>Riepilogo dei dati inseriti</h2>
+		<h2>Hai completato  la registrazione</h2>
+		<h2>Ora puoi effettuare il login (dal menu in alto a destra)</h2>		
 	</div>
 	
 	<table>
@@ -52,7 +53,6 @@
 			<th>${student.email}</th>
 		</tr>
 	</table>
-	
 	
 	
 	

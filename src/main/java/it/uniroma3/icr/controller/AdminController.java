@@ -230,11 +230,10 @@ public class AdminController {
 		path = negativeSampleService.getNegativePath();
 		path = path.concat(manuscriptName).concat("/");
 		negativeSampleService.getNegativeSampleImage(path, m); // negativeSampleImage(path);
-		String action = request.getParameter("action");
 
 		path = imageFacade.getPath();
 		path = path.concat(manuscriptName).concat("/");
-		imageFacade.updateImagesAll(path, m); // ho 978 parole e 9161 immagini
+		imageFacade.updateImagesAll(path, m); 
 
 		this.manuscriptService.saveManuscript(manuscript);
 		return "administration/insertRecap";

@@ -40,14 +40,9 @@ public class LoginController  {
 		}
 		model.addAttribute("user", new Student());
 		model.addAttribute("admin", new Administrator());
-		
-		
 		return "login";
-
 	}
 
-	
-	
 	@RequestMapping(value="*/logout", method = RequestMethod.GET)
 	public String logoutPage (HttpServletRequest request, HttpServletResponse response) {
 	    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -77,18 +72,6 @@ public class LoginController  {
 		} else if(role.contains("ROLE_ADMIN")) {
 			targetUrl = "redirect:/admin/homeAdmin";
 		}
-
 		return targetUrl;
 	}
 }
-
-
-
-
-
-
-
-
-
-
-

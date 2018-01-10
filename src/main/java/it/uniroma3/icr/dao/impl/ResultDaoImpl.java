@@ -28,13 +28,13 @@ public class ResultDaoImpl implements ResultDaoCustom {
 	@Override
 	public void updateListResult(TaskWrapper taskResults) {
 		for(Result r : taskResults.getResultList()) {
-			LOGGER.info("UPDATE result: task " + r.getTask().getId() + " student " + r.getTask().getStudent().getId() + " result " +  r.getId());
+			LOGGER.debug("UPDATE result: task " + r.getTask().getId() + " student " + r.getTask().getStudent().getId() + " result " +  r.getId());
 
 			String update = "update result set answer = ?1 where id = ?2";
 			Query query = this.entityManager.createNativeQuery(update).setParameter(1, r.getAnswer()).
 					setParameter(2, r.getId());
 			if (query.executeUpdate()!=1) {
-				LOGGER.info("PROBLEM IN updateListResult - task " + r.getTask().getId() + " student " + r.getTask().getStudent().getId() + " result " +  r.getId());
+				LOGGER.debug("PROBLEM IN updateListResult - task " + r.getTask().getId() + " student " + r.getTask().getStudent().getId() + " result " +  r.getId());
 			}				
 //			this.entityManager.merge(r);
 		}

@@ -144,7 +144,7 @@ public class StudentSocial extends Student {
 	}
 	
 	public String toString() {
-		return this.getId()+" "+this.getName()+" "+this.getSurname()+" username:{" + this.getUsername() + "}";
+		return this.getId()+" "+this.getName()+" "+this.getSurname()+" username: " + this.getUsername();
 	}
 	
 	public boolean equals(Object object) {

@@ -31,11 +31,11 @@ import it.uniroma3.icr.service.impl.AdminFacade;
 import it.uniroma3.icr.service.impl.StudentFacade;
 import it.uniroma3.icr.service.impl.StudentFacadeSocial;
 import it.uniroma3.icr.validator.studentValidator;
-import it.uniroma3.icr.validator.studentValidator2;
+import it.uniroma3.icr.validator.StudentValidator2;
 
 @Controller
 public class UserController {
-	
+
 	private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
@@ -70,12 +70,18 @@ public class UserController {
 		schoolGroups.put("5", "5");
 		model.addAttribute("schoolGroups", schoolGroups);
 
+		Map<String, String> schools = setSchools();
+		model.addAttribute("schools", schools);
+		
 		return "registration";
 	}
 
 	@RequestMapping(value = "/addUser", method = RequestMethod.POST)
 	public String confirmUser(@ModelAttribute Student student, Model model) {
 
+		Map<String, String> schools = setSchools();
+		model.addAttribute("schools", schools);
+		
 		Map<String, String> schoolGroups = new HashMap<String, String>();
 		schoolGroups.put("3", "3");
 		schoolGroups.put("4", "4");
@@ -93,7 +99,8 @@ public class UserController {
 			model.addAttribute("student", student);
 			userFacade.saveUser(student);
 			return "registrationRecap";
-		} else {
+//			return "users/homeStudent";
+			} else {
 			return "registration";
 		}
 
@@ -103,6 +110,9 @@ public class UserController {
 	public String confirmUserFB(@ModelAttribute StudentSocial student, Model model, @Validated Student p,
 			BindingResult bindingResult) {
 
+		Map<String, String> schools = setSchools();
+		model.addAttribute("schools", schools);
+
 		Map<String, String> schoolGroups = new HashMap<String, String>();
 		schoolGroups.put("3", "3");
 		schoolGroups.put("4", "4");
@@ -111,28 +121,34 @@ public class UserController {
 
 		StudentSocial u = userFacadesocial.findUser(student.getUsername());
 		LOGGER.info("FB authorized (student) for "+ student.toString());
-		
+
 		Administrator a = adminFacade.findAdmin(student.getUsername());
 		if (u!=null) {
 			LOGGER.info("FB authorized (u) for "+ u.toString());
-			LOGGER.info("FB validation (u) for "+ u.toString() + " is " +studentValidator2.validate(student, model, u, a));
+			LOGGER.info("FB validation (u) for "+ u.toString() + " is " +StudentValidator2.validate(student, model, u, a));
 		}
-	
-		if (studentValidator2.validate(student, model, u, a)) {
+
+		if (StudentValidator2.validate(student, model, u, a)) {
 			model.addAttribute("student", student);
 			userFacadesocial.saveUser(student);
 			model.addAttribute("social", "fb");
 			return "registrationRecap";
+//			return "users/homeStudent";
 		} else {
 			return "registrationFacebook";
 		}
 
 	}
 
+
+
 	@RequestMapping(value = "/addUserFromGoogle", method = RequestMethod.POST)
 	public String confirmUserGoogle(@ModelAttribute StudentSocial student, Model model, @Validated Student p,
 			BindingResult bindingResult) {
 
+		Map<String, String> schools = setSchools();
+		model.addAttribute("schools", schools);
+		
 		Map<String, String> schoolGroups = new HashMap<String, String>();
 		schoolGroups.put("3", "3");
 		schoolGroups.put("4", "4");
@@ -140,13 +156,21 @@ public class UserController {
 		model.addAttribute("schoolGroups", schoolGroups);
 
 		StudentSocial u = userFacadesocial.findUser(student.getUsername());
-		Administrator a = adminFacade.findAdmin(student.getUsername());
+		LOGGER.info("Goo authorized (student) for "+ student.toString());
 
-		if (studentValidator2.validate(student, model, u, a)) {
+		Administrator a = adminFacade.findAdmin(student.getUsername());
+		if (u!=null) {
+			LOGGER.info("Goo authorized (u) for "+ u.toString());
+			LOGGER.info("Goo validation (u) for "+ u.toString() + " is " +StudentValidator2.validate(student, model, u, a));
+		}
+
+		if (StudentValidator2.validate(student, model, u, a)) {
 			model.addAttribute("student", student);
 			userFacadesocial.saveUser(student);
 			model.addAttribute("social", "goo");
 			return "registrationRecap";
+//			return "users/homeStudent";
+
 		} else {
 			return "registrationGoogle";
 		}
@@ -192,6 +216,34 @@ public class UserController {
 		return "users/homeStudent";
 	}
 
+	private Map<String, String> setSchools() {
+		Map<String, String> schools = new HashMap<>();
+		schools.put("Anco Marzio","Anco Marzio");
+		schools.put("Aristofane","Aristofane");
+		schools.put("Aristotele","Aristotele");
+		schools.put("Augusto","Augusto");
+		schools.put("C.Cavour","C.Cavour");
+		schools.put("Croce Aleramo","Croce Aleramo");
+		schools.put("Democrito","Democrito");
+		schools.put("Ettore Majorana","Ettore Majorana");
+		schools.put("Farnesina","Farnesina");
+		schools.put("Giordano Bruno","Giordano Bruno");
+		schools.put("Giulio Cesare","Giulio Cesare");
+		schools.put("Giuseppe Peano","Giuseppe Peano");
+		schools.put("Guidonia Montecelio","Guidonia Montecelio");
+		schools.put("IIS via Albergotti 35","IIS via Albergotti 35");
+		schools.put("Istituto Minerva","Istituto Minerva");
+		schools.put("Kennedy","Kennedy");
+		schools.put("Keplero","Keplero");
+		schools.put("Luciano Manara","Luciano Manara");
+		schools.put("Massimiliano Massimo","Massimiliano Massimo");
+		schools.put("Primo Levi","Primo Levi");
+		schools.put("Sandro Pertini","Sandro Pertini");
+		schools.put("Tacito","Tacito");
+		schools.put("Volontario esterno","Volontario esterno");
+		return schools;
+	}
+	
 	/*
 	 * @RequestMapping(value = "/user/homeStudentSocial") public String
 	 * toHomeStudentSocial(@ModelAttribute StudentSocial student, Model model,

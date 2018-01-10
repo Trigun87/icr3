@@ -76,7 +76,7 @@
 			<input type="hidden" name="scope" value="email" />
 			
 			<div class="social-wrap c">
-		<button class="googleplus" type="submit" style='cursor:pointer' >Accedi con Google</button> </div>
+		<button class="googleplus" type="submit" style='cursor:pointer' >Accedi con Google+</button> </div>
 		<input type="hidden" name="daGoogle" />
 		</form>
 		

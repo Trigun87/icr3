@@ -32,21 +32,18 @@ public class FacebookController {
 
 	private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
 
-//PAOLO	private Facebook facebook;
 	private ConnectionRepository connectionRepository;
 	@Autowired
 	private StudentFacadeSocial userFacadesocial;
 
 	public FacebookController(Facebook facebook, ConnectionRepository connectionRepository) {
-//PAOLO		this.facebook = facebook;
 		this.connectionRepository = connectionRepository;
-
 	}
 
 	@RequestMapping(value = "/facebookLogin", method = { RequestMethod.GET, RequestMethod.POST })
 	public String helloFacebook(@RequestParam(value = "daFB", required = false) String daFB, Model model,
 			@ModelAttribute("social") String social, RedirectAttributes redirectAttributes) {
-//PAOLO ADD NEXT LINE
+
 		Facebook facebook = connectionRepository.findPrimaryConnection(Facebook.class).getApi();
 		
 		if (daFB == null)
@@ -56,19 +53,14 @@ public class FacebookController {
 			return "redirect:/connect/facebook";
 		}
 
-		
-//		String[] fields = { "name", "email" };
 		String[] fields = { "first_name", "last_name", "email" };
 
 		
 		User user = facebook.fetchObject("me", User.class, fields);
-//		User user = facebook.fetchObject("me", User.class);
-
 
 		String email = user.getEmail();
 		String id = user.getId();
 
-//		StudentSocial student = userFacadesocial.findUser(email);
 		StudentSocial student = userFacadesocial.findUser(id);
 
 		if (student != null) {
@@ -81,27 +73,23 @@ public class FacebookController {
 			auth.setDetails(student);
 			SecurityContextHolder.getContext().setAuthentication(auth);
 			model.addAttribute("student", student);
-		    LOGGER.info(student.toString() +" logged in");
+		    LOGGER.info("Login: " + student.toString());
 			social = "fb";
 			redirectAttributes.addFlashAttribute("social", social);
 			return "redirect:/user/homeStudent";
 		}
 
-//		String userprofile = user.getName();
-//		String[] temp;
-//		String delimiter = " ";
-//		temp = userprofile.split(delimiter);
-//		String name = temp[0];
-//		String surname = temp[1];
 		String name = user.getFirstName();
 		String surname = user.getLastName();
-//		String email = user.getEmail();
 		
 		model.addAttribute("nome", name);
 		model.addAttribute("cognome", surname);
 		model.addAttribute("email", email);
 		model.addAttribute("id", id);
 		model.addAttribute("student", new StudentSocial());
+		
+		Map<String, String> schools = setSchools();
+		model.addAttribute("schools", schools);
 
 		Map<String, String> schoolGroups = new HashMap<String, String>();
 		schoolGroups.put("3", "3");
@@ -109,6 +97,34 @@ public class FacebookController {
 		schoolGroups.put("5", "5");
 		model.addAttribute("schoolGroups", schoolGroups);
 		return "/registrationFacebook";
+	}
+	
+	private Map<String, String> setSchools() {
+		Map<String, String> schools = new HashMap<>();
+		schools.put("Anco Marzio","Anco Marzio");
+		schools.put("Aristofane","Aristofane");
+		schools.put("Aristotele","Aristotele");
+		schools.put("Augusto","Augusto");
+		schools.put("C.Cavour","C.Cavour");
+		schools.put("Croce Aleramo","Croce Aleramo");
+		schools.put("Democrito","Democrito");
+		schools.put("Ettore Majorana","Ettore Majorana");
+		schools.put("Farnesina","Farnesina");
+		schools.put("Giordano Bruno","Giordano Bruno");
+		schools.put("Giulio Cesare","Giulio Cesare");
+		schools.put("Giuseppe Peano","Giuseppe Peano");
+		schools.put("Guidonia Montecelio","Guidonia Montecelio");
+		schools.put("IIS via Albergotti 35","IIS via Albergotti 35");
+		schools.put("Istituto Minerva","Istituto Minerva");
+		schools.put("Kennedy","Kennedy");
+		schools.put("Keplero","Keplero");
+		schools.put("Luciano Manara","Luciano Manara");
+		schools.put("Massimiliano Massimo","Massimiliano Massimo");
+		schools.put("Primo Levi","Primo Levi");
+		schools.put("Sandro Pertini","Sandro Pertini");
+		schools.put("Tacito","Tacito");
+		schools.put("Volontario esterno","Volontario esterno");
+		return schools;
 	}
 
 }

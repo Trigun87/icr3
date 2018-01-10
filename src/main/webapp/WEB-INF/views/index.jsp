@@ -26,13 +26,12 @@
 	<section id="banner">
 		<div class="inner">
 			<h2>In Codice Ratio</h2>
-			<p>Un nuovo sistema</p> 
-			<p>per trascrivere manoscritti medievali</p>
+			<p>Sistema di addestramento della rete neurale</p> 
+			<p>per la trascrizione di manoscritti medievali</p>
+			<p>dell'Archivio Vaticano Segreto</p>
 		</div>
 	</section>
 	
-
-
 	<!-- Scripts -->
 	<script src="${pageContext.request.contextPath}/js/jquery.min.js"></script>
 	<script src="${pageContext.request.contextPath}/js/jquery.scrollex.min.js"></script>

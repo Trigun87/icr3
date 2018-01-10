@@ -41,7 +41,9 @@ public class ImageFacade {
 						//Word word = new Word();
 						String path = images[z].getPath();
 //						path = path.substring(path.indexOf("main/resources/static") + 22, path.length());
-						path = path.substring(path.indexOf("classes/static") + 15, path.length());
+//						path = path.substring(path.indexOf("classes/static") + 15, path.length());
+						path = path.substring(path.indexOf("/static") + 8, path.length());
+
 						Image img = new Image();
 						this.updateImage(img, image, manuscript, page, row, path);
 
@@ -108,7 +110,8 @@ public class ImageFacade {
 				String image = FilenameUtils.getBaseName(images[z].getName());
 				String path = images[z].getPath().replace("\\", "/");
 //				path = path.substring(path.indexOf("main/resources/static") + 22, path.length());
-				path = path.substring(path.indexOf("classes/static") + 15, path.length());
+//				path = path.substring(path.indexOf("classes/static") + 15, path.length());
+				path = path.substring(path.indexOf("/static") + 8, path.length());
 
 				Image img = new Image();
 				this.updateImage(img, image, manuscript, page, row, path);

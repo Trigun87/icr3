@@ -11,12 +11,22 @@ public class IndexController {
 
 	@RequestMapping(value="/",  method = RequestMethod.GET)
 	public String goToIndex() {
-		return "index";
+		return "login";
 		
+	}
+	
+	@RequestMapping(value="/login_admin", method=RequestMethod.GET)
+	public String goToLoginAdmin(){
+		return "login_admin";
+	}
+	
+	@RequestMapping(value="/login_studente", method=RequestMethod.GET)
+	public String goToLoginStudente(){
+		return "login_admin";
 	}
 	
 	@RequestMapping(value="/index", method=RequestMethod.GET)
 	public String goToIndex1(){
-		return "index";
+		return "login";
 	}
 }

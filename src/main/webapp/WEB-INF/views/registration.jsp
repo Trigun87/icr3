@@ -40,21 +40,27 @@
 						<div class="field-wrap">
 							<label> Nome </label>
 							<form:input type="text" path="name" placeholder="Nome" value="${nome}" />
-							${errName}
+							<font size="3" color="red">${errName}</font>
 							
 						</div>
 
 						<div class="field-wrap">
 							<label> Cognome </label>
 							<form:input type="text" path="surname" placeholder="Cognome" value="${cognome}" />
-							${errSurname}
+							<font size="3" color="red">${errSurname}</font>
 						</div>
 
+						<div class="field-wrap">
+							<label> Email </label>
+							<form:input type="text" path="email" placeholder="Email" value="${Email}" />
+							<font size="3" color="red">${errEmail}</font>
+						</div>
 						
 						<div class="field-wrap">
 							<label> Scuola </label>
-							<form:input type="text" path='school' placeholder="Scuola" />
-							${errSchool}
+							<form:select type="text" path='school'>
+										<form:options items="${schools}" />
+							</form:select>	
 						</div>
 
 						<div class="field-wrap">
@@ -67,22 +73,20 @@
 						<div class="field-wrap">
 							<label> Sezione </label>
 							<form:input type="text" path='section' placeholder="Sezione" />
-							${errSection}
+							<font size="3" color="red">${errSection}</font>
 						</div>
 
 						<div class="field-wrap">
 							<label> Username </label>
 							<form:input type="text" path='username' placeholder="Username" value="${email}" />
 							<font size="3" color="red">${usernameError}</font>
-							${errUsername}
-							
 						</div>
 
 						<div class="field-wrap">
 							<label> Password </label>
 							<form:input type="password" path='password'
 								placeholder="Password" name="password" />
-								${errPassword}
+								<font size="3" color="red">${errPassword}</font>
 						</div>
 						<div class="field-wrap">
 							<label> Conferma Password </label> <input type="password"

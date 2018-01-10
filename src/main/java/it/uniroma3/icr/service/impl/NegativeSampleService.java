@@ -66,7 +66,8 @@ public class NegativeSampleService {
 						int xImg = x;
 						int yImg = y;
 //						String path = pathFile.substring(pathFile.indexOf("main/resources/static")+22, pathFile.length());
-						String path = pathFile.substring(pathFile.indexOf("classes/static") + 15, pathFile.length());
+//						String path = pathFile.substring(pathFile.indexOf("classes/static") + 15, pathFile.length());
+						String path = pathFile.substring(pathFile.indexOf("/static") + 8, pathFile.length());
 
 						
 						String type = typeSymbol;

@@ -30,7 +30,7 @@
 			<h1>
 				<a href="index.html">In Codice Ratio</a>
 			</h1>
-			<nav id="nav">
+<!--  			<nav id="nav">
 				<ul>
 					<li class="special"><a href="#menu" class="menuToggle"><span>Menu</span></a>
 						<div id="menu">
@@ -55,6 +55,7 @@
 						</div></li>
 				</ul>
 			</nav>
+-->
 		</header>
 	</div>
 
@@ -65,10 +66,10 @@
 	
 		<div class="inner">
 		
-		<h2>	Hai eseguito il login da Google con successo  </h2>
+		<h2>	Hai eseguito il login da Google+ con successo  </h2>
 				
 				<form action="${pageContext.request.contextPath}/googleLogin" method="post">
-				<button type="submit" style='cursor:pointer'>prosegui</button> 
+				<button type="submit" style='cursor:pointer'>Prosegui</button> 
 				<input type="hidden" name="daGoogle" />
 					<input type="hidden" name="social" value="goo" />
 				</form>

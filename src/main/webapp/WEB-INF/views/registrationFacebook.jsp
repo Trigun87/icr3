@@ -26,12 +26,11 @@
 </head>
 
 <body class="landing">
-	<jsp:include page="menu.jsp" />
 	<div class="form">
 
 		<div class="tab-content">
 			<div id="signup">
-				<h1>Registrati</h1>
+				<h1>Completa la registrazione</h1>
 
 				<form:form method="post" action="addUserFromFB" modelAttribute="student"
 					name="f1" onsubmit="return matchpass()">
@@ -40,30 +39,31 @@
 						<div class="field-wrap">
 							<label> Nome </label>
 							<form:input type="text" path="name" placeholder="Nome" value="${nome}" />
-							${errName}
+							<font size="3" color="red">${errName}</font>
 							
 						</div>
 
 						<div class="field-wrap">
 							<label> Cognome </label>
 							<form:input type="text" path="surname" placeholder="Cognome" value="${cognome}" />
-							${errSurname}
+							<font size="3" color="red">${errSurname}</font>
 						</div>
 
 						<div class="field-wrap">
 							<label> Email </label>
 							<form:input type="text" path="email" placeholder="Email" value="${email}" />
-							${errEmail}
+							<font size="3" color="red">${errEmail}</font>
 						</div>
 						
 						<div class="field-wrap">
 							<label> Scuola </label>
-							<form:input type="text" path='school' placeholder="Scuola" />
-							${errSchool}
+							<form:select path='school'>
+										<form:options items="${schools}" />
+							</form:select>	
 						</div>
 
 						<div class="field-wrap">
-							<label> Anno </label>
+							<label> Classe </label>
 							<form:select path="schoolGroup">
 								<form:options items="${schoolGroups}" />
 							</form:select>
@@ -72,13 +72,10 @@
 						<div class="field-wrap">
 							<label> Sezione </label>
 							<form:input type="text" path='section' placeholder="Sezione" />
-							${errSection}
+							<font size="3" color="red">${errSection}</font>
 						</div>
-
-
-							<form:input type="hidden" path='username' placeholder="Username" value="${id}"  />
 						
-
+						<form:input type="hidden" path='username' placeholder="Username" value="${id}" />
 						<button type="submit" class="button button-block">Conferma</button>
 					</div>
 				</form:form>

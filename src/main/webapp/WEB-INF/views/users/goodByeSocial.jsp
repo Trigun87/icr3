@@ -26,8 +26,8 @@
 	<section id="banner">
 		<div class="inner">
 			<div class="inner">
-				<h2>Complimenti ${student.name}</h2>
-				<p>Hai completato tutti i Task Disponibili!</p>
+				<h2>${student.name}, hai completato tutti i Task Disponibili</h2>
+				<p>A breve ne saranno caricati altri!</p>
 			</div>
 		</div>
 	</section>

@@ -1,7 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
-<%@ page import="it.uniroma3.icr.model.Job"%>
-<%@ page import="it.uniroma3.icr.model.Task"%>
+
 
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
@@ -35,7 +34,7 @@
 <body class="landing">
 	<ul>
 		<li>
-			<h2>${student.name} ${student.surname} (${student.id})</h2>
+			<h2>${student.name} ${student.surname}</h2>
 
 			<h2>Stai svolgendo il task ${student.taskEffettuati}</h2>
 		</li>
@@ -44,12 +43,21 @@
 
 	<div align="center">
 		<h3 class="selectword">
-			Guarda la parola al centro della pagina. <br/>Se individui uno o piu' simboli simili a quelli evidenziati in verde (ma diversi da quelli in rosso),<br/>
-			marcane le regioni e premi Conferma e vai al prossimo task. <br/>Se non individui il simbolo cercato, premi Conferma e vai al prossimo task (senza marcare niente).
+			Guarda la parola al centro della pagina.<br/>
+			Se al suo interno individui uno o piu' simboli simili a quelli marcati in 
+			nero negli esempi in alto (riquadro verde)<br/>
+			marcane le regioni (clickandoci sopra) e premi <em>Conferma e vai al prossimo task</em>. <br/>
+			Se non individui il simbolo cercato, premi <em>Conferma e vai al prossimo task</em> 
+			(senza marcare niente).<br/>
+			Attenzione: gli esempi in basso (riquadro rosso), rappresentano 
+			falsi amici: simboli simili a questi non vanno marcati.
 		</h3>
 		<h3 class="selectchar">
-			Guarda il frammento di parola al centro della pagina. <br/>Contiene (interamente) un simbolo simile a quelli evidenziati in verde (ma diverso 
-			da quelli in rosso)?
+			Guarda il frammento di parola al centro della pagina. 
+			<br/>Contiene (interamente) un simbolo simile a quelli marcati in nero negli esempi
+			in alto (riquadro verde)?<br/>
+			Attenzione: gli esempi in basso (riquadro rosso) rappresentano falsi amici: simboli 
+			simili a questi non sono corretti.
 		</h3>
 
 		<table class="pos">
@@ -72,12 +80,12 @@
 
 		<div align="center">
 			
-			<table class="${task.job.difficulty}">
+			<table>
 				<c:forEach varStatus="vs" var="result"
 					items="${taskResults.resultList}">
 					<div id="canvasWrapper" style="height: 200px"></div>
-					<button type=button id="undotoStart" class="selectword">RESTART</button>
-					<button type=button id="undo" class="selectword">UNDO</button>
+					<button type=button id="undotoStart" class="selectword">RICOMINCIA</button>
+					<button type=button id="undo" class="selectword">ANNULLA</button>
 					<div  class="selectchar"><br><br><br></div>
 					<button type=button id="buttonSI" class="selectchar">SI</button>
 					<button type=button id="buttonNO" class="selectchar">NO</button>
@@ -105,8 +113,8 @@
 
 		<div align="center" class="wrongAnswer">
 			<br>
-			<h3>Risposta sbagliata, vuoi vedere la soluzione?</h3>
-			<button type=button id="showHint">Tenere premuto per mostrare la soluzione</button>
+			<h3><font color="red">Risposta sbagliata, vuoi vedere la soluzione?</font></h3>
+			<button type=button id="showHint"><font color="red">Tieni premuto qui per vedere la soluzione</font></button>
 			<br> <br>
 		</div>
 
